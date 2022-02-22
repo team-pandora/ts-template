@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+
+  rabbit:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  feature:
+    build: .
+    environment:
+      PORT: 8000
+      MONGO_URI: mongodb://mongo
+      MONGO_FEATURE_COLLECTION_NAME: feature
+      RABBIT_URI: amqp://rabbit
