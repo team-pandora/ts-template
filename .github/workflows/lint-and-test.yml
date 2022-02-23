@@ -4,14 +4,20 @@ on:
   pull_request:
 
 permissions:
-  contents: read
-  pull-requests: read
+  actions: write
+  checks: write
+  contents: write
+  discussions: write
+  pull-requests: write
+  statuses: write
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: intall deps
+        run: npm i
       - uses: a-b-r-o-w-n/eslint-action@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -43,3 +49,6 @@ jobs:
         run: |
           npm i
           npm run test
+        env:
+          LOAD_DOTENV: 'true'
+          DOTENV_PATH: 'test.env'
