@@ -13,7 +13,7 @@
       "runtimeArgs": ["--async-stack-traces"],
       "preLaunchTask": "tsc: build - tsconfig.json",
       "env": {
-        "LOAD_DEV_DOTENV": "true"
+        "LOAD_DOTENV": "true"
       },
       "outFiles": ["${workspaceFolder}/dist/**/*.js"]
     }

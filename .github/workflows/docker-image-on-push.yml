@@ -1,0 +1,38 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set full image name
+        run: echo "IMAGE=${{ env.REGISTRY }}/${REPO,,}:latest" >>${GITHUB_ENV}
+        env:
+          REPO: '${{ github.repository }}'
+
+      - name: Build the image
+        run: docker build -t ${{ env.IMAGE }} .
+
+      - name: Push the image
+        run: docker push ${{ env.IMAGE }}
