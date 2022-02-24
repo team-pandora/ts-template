@@ -8,7 +8,14 @@ import { createFolderRequestSchema, getFoldersRequestSchema } from './validator.
 const featureRouter: Router = Router();
 
 featureRouter.get('/folders', ValidateRequest(getFoldersRequestSchema), wrapController(FeatureController.getFolders));
-featureRouter.post('/folders', ValidateRequest(createFolderRequestSchema), wrapController(FeatureController.createFolder));
-featureRouter.get('/folders/hardToValidateWithSchema', wrapValidator(FeatureValidator.somethingThatIsImpossibleToValidateWithSchema));
+featureRouter.post(
+    '/folders',
+    ValidateRequest(createFolderRequestSchema),
+    wrapController(FeatureController.createFolder),
+);
+featureRouter.get(
+    '/folders/hardToValidateWithSchema',
+    wrapValidator(FeatureValidator.somethingThatIsImpossibleToValidateWithSchema),
+);
 
 export default featureRouter;

@@ -11,7 +11,7 @@ module.exports = {
     },
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        ecmaVersion: 2020,
+        ecmaVersion: 2021,
         sourceType: 'module',
     },
     plugins: ['@typescript-eslint'],
@@ -34,5 +34,8 @@ module.exports = {
             },
         ],
         'no-unused-vars': 'off', // Checked by typescript
+        'no-undef': 'off', // Checked by typescript
+        'no-console': 'off',
+        'no-default-export': 'off',
     },
 };
