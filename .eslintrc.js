@@ -35,7 +35,6 @@ module.exports = {
         ],
         'no-unused-vars': 'off', // Checked by typescript
         'no-undef': 'off', // Checked by typescript
-        'no-console': 'off',
         'no-default-export': 'off',
     },
 };

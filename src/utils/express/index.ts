@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 
-export const wrapMiddleware = (func: (req: Request, res?: Response) => Promise<void>) => {
+export const wrapMiddleware = (func: (req: Request, res: Response, next?: NextFunction) => Promise<void>) => {
     return (req: Request, res: Response, next: NextFunction) => {
-        func(req, res)
+        func(req, res, next)
             .then(() => next())
             .catch(next);
     };
@@ -10,8 +10,4 @@ export const wrapMiddleware = (func: (req: Request, res?: Response) => Promise<v
 
 export const wrapValidator = wrapMiddleware;
 
-export const wrapController = (func: (req: Request, res: Response, next?: NextFunction) => Promise<void>) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        func(req, res, next).catch(next);
-    };
-};
+export const wrapController = wrapMiddleware;

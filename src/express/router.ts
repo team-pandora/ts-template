@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { ServerError } from './error';
 import featureRouter from './feature/router';
 
 const appRouter = Router();
@@ -6,11 +8,14 @@ const appRouter = Router();
 appRouter.use('/api', featureRouter);
 
 appRouter.use('/isAlive', (_req, res) => {
-    res.status(200).send('alive');
+    res.status(StatusCodes.OK).send('alive');
 });
 
-appRouter.use('*', (_req, res) => {
-    res.status(404).send('Invalid Route');
+appRouter.use('*', (_req, res, next) => {
+    if (!res.headersSent) {
+        next(new ServerError(404, 'Invalid route'));
+    }
+    next();
 });
 
 export default appRouter;

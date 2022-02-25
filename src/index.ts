@@ -1,28 +1,28 @@
-/* eslint-disable no-console */
 import menash, { ConsumerMessage } from 'menashmq';
 import * as mongoose from 'mongoose';
 import config from './config';
 import Server from './express/server';
+import logger from './utils/logger';
 
 const { mongo, rabbit, service } = config;
 
 const initializeMongo = async () => {
-    console.log('Connecting to Mongo...');
+    logger.log('info', 'Connecting to Mongo...');
 
     await mongoose.connect(mongo.uri);
 
-    console.log('Mongo connection established');
+    logger.log('info', 'Mongo connection established');
 };
 
 const initializeRabbit = async () => {
-    console.log('Connecting to Rabbit...');
+    logger.log('info', 'Connecting to Rabbit...');
 
     await menash.connect(rabbit.uri, rabbit.retryOptions);
 
-    console.log('Rabbit connected');
+    logger.log('info', 'Rabbit connected');
 
     const featureConsumeFunction = (msg: ConsumerMessage) => {
-        console.log('Received message: ', msg.getContent());
+        logger.log('info', 'Received message: ', msg.getContent());
     };
 
     await menash.declareTopology({
@@ -32,7 +32,7 @@ const initializeRabbit = async () => {
         consumers: [{ queueName: 'feature-queue', onMessage: featureConsumeFunction }],
     });
 
-    console.log('Rabbit initialized');
+    logger.log('info', 'Rabbit initialized');
 };
 
 const main = async () => {
@@ -44,7 +44,7 @@ const main = async () => {
 
     await server.start();
 
-    console.log(`Server started on port: ${service.port}`);
+    logger.log('info', `Server started on port: ${service.port}`);
 };
 
-main().catch((err) => console.error(err));
+main().catch((err) => logger.log('error', err));
