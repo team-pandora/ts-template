@@ -2,7 +2,7 @@ import { once } from 'events';
 import * as express from 'express';
 import helmet from 'helmet';
 import * as http from 'http';
-import * as logger from 'morgan';
+import { loggerMiddleware, setStartTime } from '../utils/express/logger';
 import { errorMiddleware } from './error';
 import appRouter from './router';
 
@@ -21,14 +21,17 @@ class Server {
     static createExpressApp() {
         const app = express();
 
+        app.use(setStartTime);
+
         app.use(helmet());
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
 
-        app.use(logger('dev'));
         app.use(appRouter);
 
         app.use(errorMiddleware);
+
+        app.use(loggerMiddleware);
 
         return app;
     }

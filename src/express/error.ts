@@ -1,8 +1,9 @@
 import * as express from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 export class ServerError extends Error {
-    constructor(public code: number, message: string, public meta: object) {
-        super(message);
+    constructor(public code: number, public message: string, public meta?: object) {
+        super();
     }
 }
 
@@ -12,22 +13,23 @@ export const errorMiddleware = (
     res: express.Response,
     next: express.NextFunction,
 ) => {
-    if (error.name === 'ValidationError') {
-        res.status(400).send({
-            type: error.name,
-            message: error.message,
-        });
-    } else if (error instanceof ServerError) {
-        res.status(error.code).send({
-            type: error.name,
-            message: error.message,
-        });
-    } else {
-        res.status(500).send({
-            type: error.name,
-            message: error.message,
-        });
+    let formattedError: ServerError;
+
+    switch (true) {
+        case error instanceof ServerError:
+            formattedError = error as ServerError;
+            break;
+        case error.name === 'ValidationError':
+            formattedError = new ServerError(StatusCodes.BAD_REQUEST, error.message, { type: 'validation' });
+            break;
+        default:
+            formattedError = new ServerError(StatusCodes.INTERNAL_SERVER_ERROR, error.message, { type: 'internal' });
+            break;
     }
+
+    res.status(formattedError.code).json(formattedError);
+
+    res.locals.error = formattedError;
 
     next();
 };
