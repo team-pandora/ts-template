@@ -4,12 +4,8 @@ on:
   pull_request:
 
 permissions:
-  actions: write
   checks: write
-  contents: write
-  discussions: write
   pull-requests: write
-  statuses: write
 
 jobs:
   lint:
@@ -18,13 +14,11 @@ jobs:
       - uses: actions/checkout@v1
       - name: intall deps
         run: npm i
-      - uses: a-b-r-o-w-n/eslint-action@v2
+      - uses: mrdivyansh/eslint-action@v1.0.7
+        if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          files: 'src/**/*'
-          extensions: '.js,.ts'
-          working-directory: '.'
-          quiet: 'false'
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+          eslint-rc: .eslintrc.js
 
   test:
     runs-on: ubuntu-latest
@@ -49,6 +43,3 @@ jobs:
         run: |
           npm i
           npm run test
-        env:
-          LOAD_DOTENV: 'true'
-          DOTENV_PATH: 'test.env'
