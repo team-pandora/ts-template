@@ -1,17 +1,15 @@
-import { v4 as uuid } from 'uuid';
-import { IFolder } from './interface';
-import FolderModel from './model';
+import { IFeature, INewFeature } from './interface';
+import FeatureModel from './model';
 
-const getFolders = (query: Partial<IFolder>) => {
-    return FolderModel.find(query).exec();
+const getFeatures = (query: Partial<IFeature>) => {
+    return FeatureModel.find(query).exec();
 };
 
-const createFolder = (folder: Omit<IFolder, 'folderId'>) => {
-    const newFolder = { ...folder, folderId: uuid() };
-    return FolderModel.create(newFolder);
+const createFeature = (feature: INewFeature) => {
+    return FeatureModel.create(feature);
 };
 
 export default {
-    getFolders,
-    createFolder,
+    getFeatures,
+    createFeature,
 };
