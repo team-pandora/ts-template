@@ -41,35 +41,42 @@ describe('example unit tests', () => {
         });
     });
 
-    describe('/api/folders', () => {
+    describe('/api/features', () => {
         describe('POST', () => {
             it('should fail validation for unknown fields', () => {
-                return request(app).post('/api/folders').send({ invalidField: 'some value' }).expect(400);
+                return request(app).post('/api/features').send({ invalidField: 'some value' }).expect(400);
             });
 
             it('should fail because of missing fields ', async () => {
-                return request(app).post('/api/folders').send({}).expect(400);
+                return request(app).post('/api/features').send({}).expect(400);
             });
 
-            it('should create a folder', async () => {
-                const newFolder = { name: 'someFolder' };
-                const { body: createdFolder } = await request(app).post('/api/folders').send(newFolder).expect(200);
+            it('should fail with duplicate key error ', async () => {
+                const newFeature = { data: 'someData' };
+                await request(app).post('/api/features').send(newFeature).expect(200);
+                const { body: err } = await request(app).post('/api/features').send(newFeature).expect(400);
+                expect(err.meta.type).toBe('mongo');
+            });
 
-                expect(mongoose.Types.ObjectId.isValid(createdFolder._id)).toBe(true);
-                expect(createdFolder).toMatchObject(newFolder);
-                expect(new Date(createdFolder.createdAt).getTime()).toBeCloseTo(Date.now(), -2);
-                expect(new Date(createdFolder.updatedAt).getTime()).toBeCloseTo(Date.now(), -2);
+            it('should create a feature', async () => {
+                const newFeature = { data: 'someData' };
+                const { body: createdFeature } = await request(app).post('/api/features').send(newFeature).expect(200);
+
+                expect(mongoose.Types.ObjectId.isValid(createdFeature._id)).toBe(true);
+                expect(createdFeature).toMatchObject(newFeature);
+                expect(new Date(createdFeature.createdAt).getTime()).toBeCloseTo(Date.now(), -2);
+                expect(new Date(createdFeature.updatedAt).getTime()).toBeCloseTo(Date.now(), -2);
             });
         });
 
         describe('GET', () => {
-            it('should return all folders', async () => {
-                const newFolder = { name: 'someFolder' };
-                await request(app).post('/api/folders').send(newFolder).expect(200);
+            it('should return all features', async () => {
+                const newFeature = { data: 'someData' };
+                await request(app).post('/api/features').send(newFeature).expect(200);
 
-                const { body: folders } = await request(app).get('/api/folders').expect(200);
-                expect(folders).toHaveLength(1);
-                expect(mongoose.Types.ObjectId.isValid(folders[0]._id)).toBe(true);
+                const { body: features } = await request(app).get('/api/features').expect(200);
+                expect(features).toHaveLength(1);
+                expect(mongoose.Types.ObjectId.isValid(features[0]._id)).toBe(true);
             });
         });
     });

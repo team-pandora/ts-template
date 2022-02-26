@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 import FeatureManager from './manager';
 
-const getFolders = async (req: Request, res: Response) => {
-    res.json(await FeatureManager.getFolders(req.query));
+const getFeatures = async (req: Request, res: Response) => {
+    res.json(await FeatureManager.getFeatures(req.query));
 };
 
-const createFolder = async (req: Request, res: Response) => {
-    res.json(await FeatureManager.createFolder(req.body));
+const createFeature = async (req: Request, res: Response) => {
+    res.json(await FeatureManager.createFeature(req.body));
 };
 
 export default {
-    getFolders,
-    createFolder,
+    getFeatures,
+    createFeature,
 };

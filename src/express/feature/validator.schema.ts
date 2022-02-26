@@ -1,19 +1,19 @@
 import * as Joi from 'joi';
 
-// GET /api/forlders?name=test1
-export const getFoldersRequestSchema = Joi.object({
+// GET /api/features?data=someData123
+export const getFeatureRequestSchema = Joi.object({
     query: {
-        name: Joi.string().alphanum(),
-        folderId: Joi.string().uuid(),
+        data: Joi.string().alphanum(),
+        _id: Joi.string().uuid(),
     },
     body: {},
     params: {},
 });
 
-// POST /api/folders/
-export const createFolderRequestSchema = Joi.object({
+// POST /api/features/
+export const createFeatureRequestSchema = Joi.object({
     body: {
-        name: Joi.string().alphanum().required(),
+        data: Joi.string().alphanum().required(),
     },
     query: {},
     params: {},

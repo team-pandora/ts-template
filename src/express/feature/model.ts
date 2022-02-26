@@ -1,17 +1,14 @@
 import * as mongoose from 'mongoose';
 import config from '../../config';
-import { IFolder } from './interface';
+import { mongoDuplicateKeyError } from './errors';
+import { IFeature } from './interface';
 
-const FolderSchema = new mongoose.Schema(
+const FeatureSchema = new mongoose.Schema(
     {
-        folderId: {
+        data: {
             type: String,
             required: true,
             unique: true,
-        },
-        name: {
-            type: String,
-            required: true,
         },
     },
     {
@@ -20,6 +17,19 @@ const FolderSchema = new mongoose.Schema(
     },
 );
 
-const FolderModel = mongoose.model<IFolder & mongoose.Document>(config.mongo.featureCollectionName, FolderSchema);
+function errorHandler(error: any, _res: any, next: any) {
+    if (error.code === 11000) {
+        next(mongoDuplicateKeyError(error));
+    } else {
+        next();
+    }
+}
 
-export default FolderModel;
+FeatureSchema.post('save', errorHandler);
+FeatureSchema.post('update', errorHandler);
+FeatureSchema.post('findOneAndUpdate', errorHandler);
+FeatureSchema.post('insertMany', errorHandler);
+
+const FeatureModel = mongoose.model<IFeature & mongoose.Document>(config.mongo.featureCollectionName, FeatureSchema);
+
+export default FeatureModel;

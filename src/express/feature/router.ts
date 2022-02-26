@@ -3,18 +3,18 @@ import { wrapController, wrapValidator } from '../../utils/express';
 import ValidateRequest from '../../utils/joi';
 import FeatureController from './controller';
 import FeatureValidator from './validator';
-import { createFolderRequestSchema, getFoldersRequestSchema } from './validator.schema';
+import { createFeatureRequestSchema, getFeatureRequestSchema } from './validator.schema';
 
 const featureRouter: Router = Router();
 
-featureRouter.get('/folders', ValidateRequest(getFoldersRequestSchema), wrapController(FeatureController.getFolders));
+featureRouter.get('/features', ValidateRequest(getFeatureRequestSchema), wrapController(FeatureController.getFeatures));
 featureRouter.post(
-    '/folders',
-    ValidateRequest(createFolderRequestSchema),
-    wrapController(FeatureController.createFolder),
+    '/features',
+    ValidateRequest(createFeatureRequestSchema),
+    wrapController(FeatureController.createFeature),
 );
 featureRouter.get(
-    '/folders/hardToValidateWithSchema',
+    '/features/hardToValidateWithSchema',
     wrapValidator(FeatureValidator.somethingThatIsImpossibleToValidateWithSchema),
 );
 

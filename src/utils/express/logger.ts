@@ -15,11 +15,15 @@ const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
         duration: prettyDuration(getPreciseTime() - res.locals.startTime),
     };
 
-    const error = (res.locals.error as ServerError) ? res.locals.error : null;
+    const error: ServerError = (res.locals.error as ServerError) ? res.locals.error : null;
 
     switch (true) {
         case statusCode >= StatusCodes.INTERNAL_SERVER_ERROR:
-            logger.log('error', `Internal error: ${error.message}, ${error.stack}`, meta);
+            logger.log(
+                'error',
+                `Internal error: ${error.message}, \nStack:\n${error.stack}\nOriginal Error:\n${error.originalError}`,
+                meta,
+            );
             break;
 
         case statusCode < StatusCodes.INTERNAL_SERVER_ERROR && statusCode >= StatusCodes.BAD_REQUEST:
