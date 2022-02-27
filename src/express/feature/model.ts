@@ -25,10 +25,7 @@ function errorHandler(error: any, _res: any, next: any) {
     }
 }
 
-FeatureSchema.post('save', errorHandler);
-FeatureSchema.post('update', errorHandler);
-FeatureSchema.post('findOneAndUpdate', errorHandler);
-FeatureSchema.post('insertMany', errorHandler);
+FeatureSchema.post(/.*/, errorHandler);
 
 const FeatureModel = mongoose.model<IFeature & mongoose.Document>(config.mongo.featureCollectionName, FeatureSchema);
 
