@@ -19,18 +19,14 @@ export const errorMiddleware = (
 ) => {
     let serverError: ServerError;
 
-    switch (true) {
-        case error instanceof ServerError:
-            serverError = error as ServerError;
-            break;
-        case error.name === 'ValidationError':
-            serverError = new ServerError(StatusCodes.BAD_REQUEST, error.message, error, { type: 'validation' });
-            break;
-        default:
-            serverError = new ServerError(StatusCodes.INTERNAL_SERVER_ERROR, error.message, error, {
-                type: 'internal',
-            });
-            break;
+    if (error instanceof ServerError) {
+        serverError = error;
+    } else if (error.name === 'ValidationError') {
+        serverError = new ServerError(StatusCodes.BAD_REQUEST, error.message, error, { type: 'validation' });
+    } else {
+        serverError = new ServerError(StatusCodes.INTERNAL_SERVER_ERROR, error.message, error, {
+            type: 'internal',
+        });
     }
 
     res.status(serverError.code).json(serverError.responseJson);

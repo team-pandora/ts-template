@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 // GET /api/features?data=someData123
-export const getFeatureRequestSchema = Joi.object({
+const getFeatureRequestSchema = Joi.object({
     query: {
         data: Joi.string().alphanum(),
         _id: Joi.string().uuid(),
@@ -11,10 +11,12 @@ export const getFeatureRequestSchema = Joi.object({
 });
 
 // POST /api/features/
-export const createFeatureRequestSchema = Joi.object({
+const createFeatureRequestSchema = Joi.object({
     body: {
         data: Joi.string().alphanum().required(),
     },
     query: {},
     params: {},
 });
+
+export { getFeatureRequestSchema, createFeatureRequestSchema };

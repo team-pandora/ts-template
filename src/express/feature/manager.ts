@@ -9,7 +9,4 @@ const createFeature = (feature: INewFeature) => {
     return FeatureModel.create(feature);
 };
 
-export default {
-    getFeatures,
-    createFeature,
-};
+export { getFeatures, createFeature };
