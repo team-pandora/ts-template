@@ -13,7 +13,7 @@ appRouter.use('/isAlive', (_req, res) => {
 
 appRouter.use('*', (_req, res, next) => {
     if (!res.headersSent) {
-        next(new ServerError(404, 'Invalid route'));
+        next(new ServerError(StatusCodes.NOT_FOUND, 'Invalid route'));
     }
     next();
 });
