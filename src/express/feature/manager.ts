@@ -1,11 +1,21 @@
 import { IFeature, INewFeature } from './interface';
 import FeatureModel from './model';
 
-const getFeatures = (query: Partial<IFeature>) => {
+/**
+ * Get filtered features.
+ * @param {Partial<IFeature>} query - The query to filter the features.
+ * @returns {Promise<IFeature[]>} - Promise object containing the filtered features.
+ */
+const getFeatures = (query: Partial<IFeature>): Promise<IFeature[]> => {
     return FeatureModel.find(query).exec();
 };
 
-const createFeature = (feature: INewFeature) => {
+/**
+ * Create a new feature.
+ * @param {INewFeature} feature - The feature to create.
+ * @returns {Promise<IFeature>} - Promise object containing the created feature.
+ */
+const createFeature = (feature: INewFeature): Promise<IFeature> => {
     return FeatureModel.create(feature);
 };
 
