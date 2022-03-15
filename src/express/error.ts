@@ -22,11 +22,9 @@ export const errorMiddleware = (
     if (error instanceof ServerError) {
         serverError = error;
     } else if (error.name === 'ValidationError') {
-        serverError = new ServerError(StatusCodes.BAD_REQUEST, error.message, error, { type: 'validation' });
+        serverError = new ServerError(StatusCodes.BAD_REQUEST, error.message, error);
     } else {
-        serverError = new ServerError(StatusCodes.INTERNAL_SERVER_ERROR, error.message, error, {
-            type: 'internal',
-        });
+        serverError = new ServerError(StatusCodes.INTERNAL_SERVER_ERROR, error.message, error);
     }
 
     res.status(serverError.code).json(serverError.responseJson);

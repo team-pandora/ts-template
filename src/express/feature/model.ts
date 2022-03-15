@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import config from '../../config';
-import { mongoDuplicateKeyError } from './errors';
+import { errorHandler } from '../../utils/mongoose';
 import { IFeature } from './interface';
 
 const FeatureSchema = new mongoose.Schema(
@@ -17,13 +17,7 @@ const FeatureSchema = new mongoose.Schema(
     },
 );
 
-function errorHandler(error: any, _res: any, next: any) {
-    if (error.code === 11000) {
-        next(mongoDuplicateKeyError(error));
-    } else {
-        next();
-    }
-}
+FeatureSchema.index({ data: 1 });
 
 FeatureSchema.post(/save|update|findOneAndUpdate|insertMany/, errorHandler);
 
