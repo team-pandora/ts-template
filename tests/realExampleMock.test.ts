@@ -6,39 +6,24 @@ import Server from '../src/express/server';
 
 jest.setTimeout(30000);
 
-const removeAllCollections = async () =>
-    Promise.all(Object.values(mongoose.connection.collections).map((collection) => collection.deleteMany({})));
+const removeFeatureCollection = async () =>
+    mongoose.connection.collections[config.mongo.featureCollectionName].deleteMany({});
 
-describe('example unit tests', () => {
+describe('feature tests', () => {
     let app: Express.Application;
 
     beforeAll(async () => {
         await mongoose.connect(config.mongo.uri);
-        await removeAllCollections();
+        await removeFeatureCollection();
         app = Server.createExpressApp();
     });
 
     afterEach(async () => {
-        await removeAllCollections();
+        await removeFeatureCollection();
     });
 
     afterAll(async () => {
         await mongoose.disconnect();
-    });
-
-    test.todo('todo test'); // you can do todos for tests!
-
-    describe('/isAlive', () => {
-        it('should return alive', async () => {
-            const response = await request(app).get('/isAlive').expect(200);
-            expect(response.text).toBe('alive');
-        });
-    });
-
-    describe('/unknownRoute', () => {
-        it('should return status code 404', () => {
-            return request(app).get('/unknownRoute').expect(404);
-        });
     });
 
     describe('/api/features', () => {
@@ -54,8 +39,7 @@ describe('example unit tests', () => {
             it('should fail with duplicate key error ', async () => {
                 const newFeature = { data: 'someData' };
                 await request(app).post('/api/features').send(newFeature).expect(200);
-                const { body: err } = await request(app).post('/api/features').send(newFeature).expect(400);
-                expect(err.meta.type).toBe('mongo');
+                await request(app).post('/api/features').send(newFeature).expect(400);
             });
 
             it('should create a feature', async () => {
