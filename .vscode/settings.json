@@ -23,6 +23,20 @@
     "editor.tabSize": 2,
     "editor.quickSuggestions": true
   },
-  "cSpell.words": ["alphanum", "amqp", "fanout", "todos", "upsert"],
-  "cSpell.enableFiletypes": ["env", "helm"]
+  "cSpell.enableFiletypes": ["env", "helm"],
+  "cSpell.words": [
+    "alphanum",
+    "amqp",
+    "dbaeumer",
+    "esbenp",
+    "fanout",
+    "Logform",
+    "menash",
+    "menashmq",
+    "prettierrc",
+    "todos",
+    "trycatch",
+    "uncolorize",
+    "upsert"
+  ]
 }

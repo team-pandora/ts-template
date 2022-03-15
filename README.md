@@ -2,7 +2,7 @@
 
 ## Setup:
 
-1. Install recommended VS Code extentions:
+1. Install recommended VS Code extensions:
 
     - `eslint` "dbaeumer.vscode-eslint"
     - `prettier` "esbenp.prettier-vscode"
