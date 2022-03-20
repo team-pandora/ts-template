@@ -1,9 +1,9 @@
-FROM node:13.12-alpine
+FROM node:17-alpine
 
 WORKDIR /usr/src/app
 
 COPY ["package.json", "package-lock.json*", "./"]
-RUN npm install --production=false --silent
+RUN npm install --only=prod --silent
 COPY . .
 
 CMD npm run dev
