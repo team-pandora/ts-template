@@ -3,7 +3,7 @@ import config from '../../config';
 import { errorHandler } from '../../utils/mongoose';
 import { IFeature } from './interface';
 
-const FeatureSchema = new mongoose.Schema(
+const FeatureSchema = new mongoose.Schema<IFeature & mongoose.Document>(
     {
         data: {
             type: String,
