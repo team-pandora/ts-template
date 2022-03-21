@@ -21,7 +21,7 @@ export const errorMiddleware = (
 
     if (error instanceof ServerError) {
         serverError = error;
-    } else if (error.name === 'ValidationError') {
+    } else if (['ValidationError', 'SyntaxError'].includes(error.name)) {
         serverError = new ServerError(StatusCodes.BAD_REQUEST, error.message, error);
     } else {
         serverError = new ServerError(StatusCodes.INTERNAL_SERVER_ERROR, error.message, error);
