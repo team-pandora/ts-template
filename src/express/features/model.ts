@@ -21,6 +21,6 @@ FeatureSchema.index({ data: 1 });
 
 FeatureSchema.post(/save|update|findOneAndUpdate|insertMany/, errorHandler);
 
-const FeatureModel = mongoose.model<IFeature & mongoose.Document>(config.mongo.featureCollectionName, FeatureSchema);
+const FeatureModel = mongoose.model<IFeature & mongoose.Document>(config.mongo.featuresCollectionName, FeatureSchema);
 
 export default FeatureModel;

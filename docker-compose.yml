@@ -17,7 +17,7 @@ services:
     environment:
       PORT: 8000
       MONGO_URI: mongodb://mongo
-      MONGO_FEATURE_COLLECTION_NAME: feature
+      MONGO_FEATURES_COLLECTION_NAME: features
       RABBIT_URI: amqp://rabbit
     ports:
       - 8000:8000

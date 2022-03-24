@@ -7,9 +7,9 @@ import Server from '../src/express/server';
 jest.setTimeout(30000);
 
 const removeFeatureCollection = async () =>
-    mongoose.connection.collections[config.mongo.featureCollectionName].deleteMany({});
+    mongoose.connection.collections[config.mongo.featuresCollectionName].deleteMany({});
 
-describe('feature tests', () => {
+describe('features tests', () => {
     let app: Express.Application;
 
     beforeAll(async () => {
