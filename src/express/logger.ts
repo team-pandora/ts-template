@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { ServerError } from '../../express/error';
-import logger from '../logger';
-import { getPreciseTime, prettyDuration } from '../time';
+import logger from '../utils/logger';
+import { getPreciseTime, prettyDuration } from '../utils/time';
+import { ServerError } from './error';
 
 const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const { statusCode } = res;

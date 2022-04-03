@@ -25,6 +25,7 @@
   },
   "cSpell.enableFiletypes": ["env", "helm"],
   "cSpell.words": [
+    "adfs",
     "alphanum",
     "amqp",
     "dbaeumer",
@@ -34,6 +35,7 @@
     "menash",
     "menashmq",
     "prettierrc",
+    "Shraga",
     "todos",
     "trycatch",
     "uncolorize",
