@@ -7,7 +7,3 @@ export const wrapMiddleware = (func: (req: Request, res: Response, next?: NextFu
             .catch(next);
     };
 };
-
-export const wrapValidator = wrapMiddleware;
-
-export const wrapController = wrapMiddleware;
