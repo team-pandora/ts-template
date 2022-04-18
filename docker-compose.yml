@@ -20,7 +20,7 @@ services:
       MONGO_URI: mongodb://mongo:27017/ts-template
       MONGO_FEATURES_COLLECTION_NAME: features
       RABBIT_URI: amqp://rabbit
-      SPIKE_ENABLED: true
-      SHRAGA_ENABLED: true
+      SPIKE_ENABLED: "true"
+      SHRAGA_ENABLED: "true"
     ports:
       - 8000:8000

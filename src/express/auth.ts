@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import config from '../config';
-import { wrapMiddleware } from '../utils/express';
+import wrapMiddleware from '../utils/express';
 import { formatShragaUser, verifyShragaJwt } from '../utils/shraga';
 import { validateSpikeJWT } from '../utils/spike';
 import { ISpikeJWTValidations } from '../utils/spike/interface';

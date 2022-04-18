@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import { wrapMiddleware } from '../../utils/express';
+import wrapMiddleware from '../../utils/express';
 import ValidateRequest from '../../utils/joi';
 import { authMiddlewareFactory, shragaAuthMiddleware, spikeAuthMiddlewareFactory } from '../auth';
 import * as FeaturesController from './controller';
 import * as FeaturesValidator from './validator';
-import { createFeatureRequestSchema, getFeatureRequestSchema } from './validator.schema';
+import { createFeatureRequestSchema, getFeaturesRequestSchema } from './validator.schema';
 
 const featuresRouter: Router = Router();
 
-featuresRouter.get('/', ValidateRequest(getFeatureRequestSchema), wrapMiddleware(FeaturesController.getFeatures));
+featuresRouter.get('/', ValidateRequest(getFeaturesRequestSchema), wrapMiddleware(FeaturesController.getFeatures));
 featuresRouter.post('/', ValidateRequest(createFeatureRequestSchema), wrapMiddleware(FeaturesController.createFeature));
 featuresRouter.get(
     '/hardToValidateWithSchema',

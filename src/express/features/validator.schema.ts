@@ -4,7 +4,7 @@ import { JoiMongoObjectId } from '../../utils/joi';
 /**
  * GET /api/features?data=someData123
  */
-const getFeatureRequestSchema = Joi.object({
+const getFeaturesRequestSchema = Joi.object({
     query: {
         _id: JoiMongoObjectId.optional(),
         data: Joi.string().alphanum().optional(),
@@ -25,4 +25,4 @@ const createFeatureRequestSchema = Joi.object({
     params: {},
 });
 
-export { getFeatureRequestSchema, createFeatureRequestSchema };
+export { getFeaturesRequestSchema, createFeatureRequestSchema };

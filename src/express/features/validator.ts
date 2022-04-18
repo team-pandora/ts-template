@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
-export const somethingThatIsImpossibleToValidateWithSchema = async (_req: Request) => {
+const somethingThatIsImpossibleToValidateWithSchema = async (_req: Request) => {
     // Some validations
 };
 
-export default { somethingThatIsImpossibleToValidateWithSchema };
+export { somethingThatIsImpossibleToValidateWithSchema };
