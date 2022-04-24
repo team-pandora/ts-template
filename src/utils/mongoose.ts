@@ -17,7 +17,8 @@ function errorHandler(error: any, _res: any, next: any) {
 }
 
 const setErrorHandler = (schema: mongoose.Schema) => {
-    schema.post(['update', 'findOneAndUpdate'], errorHandler);
+    schema.post(['update', 'updateMany', 'updateOne', 'findOneAndUpdate'], errorHandler);
+    schema.post(['save'], errorHandler);
 };
 
 const makeTransaction = async <Type>(
