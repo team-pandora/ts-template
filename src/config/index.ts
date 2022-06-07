@@ -31,10 +31,7 @@ const config = {
         enabled: env.get('SHRAGA_ENABLED').required().asBool(),
         URL: env.get('SHRAGA_URL').required().asString(),
         secret: env.get('SHRAGA_SECRET').default('secret').asString(),
-        callbackURL: env
-            .get('SHRAGA_CALLBACK_URL')
-            .default(`http://localhost:${env.get('PORT').asPortNumber()}/auth/callback`)
-            .asString(),
+        callbackURL: env.get('SHRAGA_CALLBACK_URL').required().asString(),
     },
 };
 

@@ -25,6 +25,7 @@ services:
       SPIKE_PUBLIC_KEY_DOWNLOAD_URL: https://ospike.northeurope.cloudapp.azure.com/.well-known/publickey.pem
       SHRAGA_ENABLED: true
       SHRAGA_URL: https://shraga.shraga.branch-yesodot.org
+      SHRAGA_CALLBACK_URL: http://localhost:8000/auth/callback
 
     ports:
       - 8000:8000
