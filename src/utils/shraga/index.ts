@@ -13,7 +13,7 @@ const verifyShragaJwt = async (token: string): Promise<any> => {
     return payload;
 };
 
-const formatShragaUser = (payload: any): any => ({
+const formatShragaUser = (payload: { [key: string]: any }): any => ({
     id: payload.id,
     adfsId: payload.adfsId,
     genesisId: payload.genesisId,

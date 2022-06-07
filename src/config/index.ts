@@ -20,20 +20,17 @@ const config = {
     },
     spike: {
         enabled: env.get('SPIKE_ENABLED').required().asBool(),
-        audience: env.get('SPIKE_AUDIENCE').default('2rYAQb~MpuJ5JDk~yBc2tk6wgajjPy').asString(),
+        audience: env.get('SPIKE_AUDIENCE').required().asString(),
         publicKey: {
             path: env.get('SPIKE_PUBLIC_KEY_PATH').default('./certificate/publicKey.pem').asString(),
-            downloadUrl: env
-                .get('SPIKE_PUBLIC_KEY_DOWNLOAD_URL')
-                .default('https://ospike.northeurope.cloudapp.azure.com/.well-known/publickey.pem')
-                .asUrlString(),
+            downloadUrl: env.get('SPIKE_PUBLIC_KEY_DOWNLOAD_URL').required().asUrlString(),
             renewalIntervalMs: env.get('SPIKE_PUBLIC_KEY_RENEWAL_INTERVAL_MS').default('0').asInt(),
         },
     },
     shraga: {
         enabled: env.get('SHRAGA_ENABLED').required().asBool(),
-        URL: env.get('SHRAGA_URL').default('https://shraga.shraga.branch-yesodot.org').asString(),
-        secret: env.get('SHRAGA_SECRET').default('secret').required().asString(),
+        URL: env.get('SHRAGA_URL').required().asString(),
+        secret: env.get('SHRAGA_SECRET').default('secret').asString(),
         callbackURL: env
             .get('SHRAGA_CALLBACK_URL')
             .default(`http://localhost:${env.get('PORT').asPortNumber()}/auth/callback`)

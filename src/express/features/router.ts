@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import wrapMiddleware from '../../utils/express';
 import ValidateRequest from '../../utils/joi';
-import { authMiddlewareFactory, shragaAuthMiddleware, spikeAuthMiddlewareFactory } from '../auth';
+import { shragaAuthMiddleware as shraga, spikeAuthMiddlewareFactory as spike } from '../auth';
 import * as FeaturesController from './controller';
 import * as FeaturesValidator from './validator';
 import { createFeatureRequestSchema, getFeaturesRequestSchema } from './validator.schema';
@@ -15,13 +15,10 @@ featuresRouter.get(
     wrapMiddleware(FeaturesValidator.somethingThatIsImpossibleToValidateWithSchema),
 );
 
-/** ******* SHRAGA AUTHENTICATED ROUTE ******** */
-featuresRouter.get('/shraga', shragaAuthMiddleware, wrapMiddleware(FeaturesController.getShraga));
+/* SHRAGA AUTHENTICATED ROUTE */
+featuresRouter.get('/shraga', shraga, wrapMiddleware(FeaturesController.getShraga));
 
-/** ******* SPIKE AUTHENTICATED ROUTE ******** */
-featuresRouter.get('/spike', spikeAuthMiddlewareFactory(['read']), wrapMiddleware(FeaturesController.getSpike));
-
-/** ******* SPIKE OR SHRAGA AUTHENTICATED ROUTE ******** */
-featuresRouter.get('/auth', authMiddlewareFactory(['read']), wrapMiddleware(FeaturesController.getAuth));
+/* SPIKE AUTHENTICATED ROUTE */
+featuresRouter.get('/spike', spike(['read']), wrapMiddleware(FeaturesController.getSpike));
 
 export default featuresRouter;

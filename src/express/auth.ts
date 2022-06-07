@@ -7,7 +7,7 @@ import { validateSpikeJWT } from '../utils/spike';
 import { ISpikeJWTValidations } from '../utils/spike/interface';
 import { ServerError } from './error';
 
-const spikeAuthMiddlewareFactory = (scopes: Array<string>) => {
+const unwrappedSpikeAuthMiddlewareFactory = (scopes: Array<string>) => {
     if (!config.spike.enabled) return async () => {};
 
     const validations: ISpikeJWTValidations = {
@@ -25,7 +25,7 @@ const spikeAuthMiddlewareFactory = (scopes: Array<string>) => {
     };
 };
 
-const shragaAuthMiddleware = async (req: Request) => {
+const unwrappedShragaAuthMiddleware = async (req: Request) => {
     if (!config.shraga.enabled) return;
 
     const token = req.cookies['access-token'];
@@ -38,30 +38,7 @@ const shragaAuthMiddleware = async (req: Request) => {
     req.user = formatShragaUser(user);
 };
 
-const authMiddlewareFactory = (scopes: Array<string>) => {
-    if (!config.shraga.enabled || !config.spike.enabled) return async () => {};
-
-    return async (req: Request) => {
-        const spikeToken = req.headers.authorization;
-        const shragaToken = req.cookies['access-token'];
-
-        if (spikeToken && shragaToken)
-            throw new ServerError(
-                StatusCodes.BAD_REQUEST,
-                'Both shraga and spike auth headers were provided. Please choose one.',
-            );
-        if (!spikeToken && !shragaToken)
-            throw new ServerError(
-                StatusCodes.UNAUTHORIZED,
-                'No shraga or spike auth headers were provided. Please choose one.',
-            );
-
-        if (spikeToken) await spikeAuthMiddlewareFactory(scopes)(req);
-        if (shragaToken) await shragaAuthMiddleware(req);
-    };
-};
-
-const shragaLoginMiddleware = async (req: Request, res: Response) => {
+const unwrappedShragaLoginMiddleware = async (req: Request, res: Response) => {
     const { relayState } = req.query;
     if (!(typeof relayState === 'string'))
         throw new ServerError(StatusCodes.BAD_REQUEST, 'Missing or Invalid RelayState in query.');
@@ -75,7 +52,7 @@ const shragaLoginMiddleware = async (req: Request, res: Response) => {
     );
 };
 
-const shragaCallbackMiddleware = async (req: Request, res: Response) => {
+const unwrappedShragaCallbackMiddleware = async (req: Request, res: Response) => {
     const token = req.query.jwt;
     if (!(typeof token === 'string'))
         throw new ServerError(StatusCodes.UNAUTHORIZED, 'Missing or Invalid JWT access token in query.');
@@ -89,16 +66,10 @@ const shragaCallbackMiddleware = async (req: Request, res: Response) => {
     res.redirect(payload.RelayState || '/');
 };
 
-const wrappedSpikeAuthMiddlewareFactory = (scopes: Array<string>) => wrapMiddleware(spikeAuthMiddlewareFactory(scopes));
-const wrappedShragaAuthMiddleware = wrapMiddleware(shragaAuthMiddleware);
-const wrappedAuthMiddlewareFactory = (scopes: Array<string>) => wrapMiddleware(authMiddlewareFactory(scopes));
-const wrappedShragaLoginMiddleware = wrapMiddleware(shragaLoginMiddleware);
-const wrappedShragaCallbackMiddleware = wrapMiddleware(shragaCallbackMiddleware);
+const spikeAuthMiddlewareFactory = (scopes: Array<string>) =>
+    wrapMiddleware(unwrappedSpikeAuthMiddlewareFactory(scopes));
+const shragaAuthMiddleware = wrapMiddleware(unwrappedShragaAuthMiddleware);
+const shragaLoginMiddleware = wrapMiddleware(unwrappedShragaLoginMiddleware);
+const shragaCallbackMiddleware = wrapMiddleware(unwrappedShragaCallbackMiddleware);
 
-export {
-    wrappedSpikeAuthMiddlewareFactory as spikeAuthMiddlewareFactory,
-    wrappedShragaAuthMiddleware as shragaAuthMiddleware,
-    wrappedAuthMiddlewareFactory as authMiddlewareFactory,
-    wrappedShragaLoginMiddleware as shragaLoginMiddleware,
-    wrappedShragaCallbackMiddleware as shragaCallbackMiddleware,
-};
+export { spikeAuthMiddlewareFactory, shragaAuthMiddleware, shragaLoginMiddleware, shragaCallbackMiddleware };

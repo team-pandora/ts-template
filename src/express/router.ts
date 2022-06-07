@@ -8,7 +8,7 @@ const appRouter = Router();
 
 appRouter.use('/api/features', featuresRouter);
 
-/** ******* SHRAGA AUTHENTICATION ROUTES ******** */
+/* SHRAGA AUTHENTICATION ROUTES */
 appRouter.get('/auth/login', shragaLoginMiddleware); // UI will redirect to this route to login with shraga
 appRouter.post('/auth/callback', shragaCallbackMiddleware); // Shraga will redirect to this route after login
 

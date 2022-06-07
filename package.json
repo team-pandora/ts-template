@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node --async-stack-traces ./dist/index.js",
     "dev": "npm run build && npm start",
-    "test": "export LOAD_DOTENV=true && export DOTENV_PATH=./.env.test && jest",
+    "test": "export LOAD_DOTENV=true && export DOTENV_PATH=./.env.test && jest -i",
     "coverage": "npm run test -- --coverage",
     "build": "tsc",
     "build:watch": "tsc --watch",

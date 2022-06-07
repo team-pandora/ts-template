@@ -15,12 +15,16 @@ services:
   feature:
     build: .
     environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: '0'
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
       PORT: 8000
-      MONGO_URI: mongodb://mongo:27017/ts-template
+      MONGO_URI: mongodb://localhost:27017/ts-template
       MONGO_FEATURES_COLLECTION_NAME: features
-      RABBIT_URI: amqp://rabbit
-      SPIKE_ENABLED: "true"
-      SHRAGA_ENABLED: "true"
+      RABBIT_URI: amqp://localhost
+      SPIKE_ENABLED: true
+      SPIKE_AUDIENCE: 2rYAQb~MpuJ5JDk~yBc2tk6wgajjPy
+      SPIKE_PUBLIC_KEY_DOWNLOAD_URL: https://ospike.northeurope.cloudapp.azure.com/.well-known/publickey.pem
+      SHRAGA_ENABLED: true
+      SHRAGA_URL: https://shraga.shraga.branch-yesodot.org
+
     ports:
       - 8000:8000

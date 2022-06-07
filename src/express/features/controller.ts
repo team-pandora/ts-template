@@ -17,8 +17,4 @@ const getSpike = async (req: Request, res: Response) => {
     res.json(req.client);
 };
 
-const getAuth = async (req: Request, res: Response) => {
-    res.json(req.user || req.client);
-};
-
-export { getFeatures, createFeature, getShraga, getSpike, getAuth };
+export { getFeatures, createFeature, getShraga, getSpike };
