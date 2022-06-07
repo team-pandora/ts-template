@@ -61,7 +61,7 @@ const unwrappedShragaCallbackMiddleware = async (req: Request, res: Response) =>
         throw new ServerError(StatusCodes.UNAUTHORIZED, `Failed to validate JWT access token: ${err.message}`);
     });
 
-    res.cookie('access-token', token);
+    res.cookie('access-token', token, { maxAge: new Date(payload.exp * 1000).getTime() - Date.now() });
 
     res.redirect(payload.RelayState || '/');
 };
