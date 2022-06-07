@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: intall deps
+      - name: Install dependencies
         run: npm i
       - uses: mrdivyansh/eslint-action@v1.0.7
         if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
@@ -25,21 +25,11 @@ jobs:
     needs:
       - lint
 
-    services:
-      mongo:
-        image: mongo
-        ports:
-          - 27017:27017
-      rabbit:
-        image: rabbitmq:3-management
-        ports:
-          - 5672:5672
-          - 15672:15672
-
     steps:
       - uses: actions/checkout@v2
 
       - name: test
         run: |
+          docker compose up -d mongo rabbit
           npm i
           npm run test
