@@ -1,10 +1,10 @@
-const sleep = (ms: number) => {
+export const sleep = (ms: number) => {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
     });
 };
 
-const prettyDuration = (ms: number) => {
+export const prettyDuration = (ms: number) => {
     const roundedMs = Math.round(ms * 1000) / 1000;
     const seconds = Math.floor(roundedMs / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -24,8 +24,6 @@ const prettyDuration = (ms: number) => {
     return result.join(' ');
 };
 
-const getPreciseTime = () => {
+export const getPreciseTime = () => {
     return Number(process.hrtime.bigint() / 1000n) / 1000;
 };
-
-export { sleep, prettyDuration, getPreciseTime };

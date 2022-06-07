@@ -3,13 +3,13 @@ import * as fs from 'fs';
 
 const fsPromises = fs.promises;
 
-interface IPublicKeyManagerConfig {
+export interface IPublicKeyManagerConfig {
     path: string;
     downloadUrl: string;
     renewalIntervalMs?: number;
 }
 
-class PublicKeyManager {
+export class PublicKeyManager {
     private publicKeyPromise: Promise<string>;
 
     private path: string;
@@ -74,4 +74,4 @@ class PublicKeyManager {
     }
 }
 
-export { PublicKeyManager };
+export default PublicKeyManager;

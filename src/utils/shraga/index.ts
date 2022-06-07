@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import config from '../../config';
 
-const verifyShragaJwt = async (token: string): Promise<any> => {
+export const verifyShragaJwt = async (token: string): Promise<any> => {
     const payload = jwt.verify(token, Buffer.from(config.shraga.secret, 'base64'), {
         clockTimestamp: Date.now() / 1000,
     });
@@ -13,7 +13,7 @@ const verifyShragaJwt = async (token: string): Promise<any> => {
     return payload;
 };
 
-const formatShragaUser = (payload: { [key: string]: any }): any => ({
+export const formatShragaUser = (payload: { [key: string]: any }): any => ({
     id: payload.id,
     adfsId: payload.adfsId,
     genesisId: payload.genesisId,
@@ -23,5 +23,3 @@ const formatShragaUser = (payload: { [key: string]: any }): any => ({
     expiration: payload.exp,
     issuedAt: payload.iat,
 });
-
-export { verifyShragaJwt, formatShragaUser };

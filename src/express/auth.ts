@@ -66,10 +66,8 @@ const unwrappedShragaCallbackMiddleware = async (req: Request, res: Response) =>
     res.redirect(payload.RelayState || '/');
 };
 
-const spikeAuthMiddlewareFactory = (scopes: Array<string>) =>
+export const spikeAuthMiddlewareFactory = (scopes: Array<string>) =>
     wrapMiddleware(unwrappedSpikeAuthMiddlewareFactory(scopes));
-const shragaAuthMiddleware = wrapMiddleware(unwrappedShragaAuthMiddleware);
-const shragaLoginMiddleware = wrapMiddleware(unwrappedShragaLoginMiddleware);
-const shragaCallbackMiddleware = wrapMiddleware(unwrappedShragaCallbackMiddleware);
-
-export { spikeAuthMiddlewareFactory, shragaAuthMiddleware, shragaLoginMiddleware, shragaCallbackMiddleware };
+export const shragaAuthMiddleware = wrapMiddleware(unwrappedShragaAuthMiddleware);
+export const shragaLoginMiddleware = wrapMiddleware(unwrappedShragaLoginMiddleware);
+export const shragaCallbackMiddleware = wrapMiddleware(unwrappedShragaCallbackMiddleware);

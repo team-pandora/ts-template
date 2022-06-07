@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { mongoDuplicateKeyError } from './express/errors';
 
-function setDefaultSettings(schema: mongoose.Schema) {
+export function setDefaultSettings(schema: mongoose.Schema) {
     // eslint-disable-next-line func-names
     schema.pre('*', function () {
         this.lean();
@@ -16,12 +16,12 @@ function errorHandler(error: any, _res: any, next: any) {
     }
 }
 
-const setErrorHandler = (schema: mongoose.Schema) => {
+export const setErrorHandler = (schema: mongoose.Schema) => {
     schema.post(['update', 'updateMany', 'updateOne', 'findOneAndUpdate'], errorHandler);
     schema.post(['save'], errorHandler);
 };
 
-const makeTransaction = async <Type>(
+export const makeTransaction = async <Type>(
     transaction: (session: mongoose.ClientSession) => Promise<Type>,
 ): Promise<Type> => {
     const session = await mongoose.startSession();
@@ -37,5 +37,3 @@ const makeTransaction = async <Type>(
         session.endSession();
     }
 };
-
-export { setErrorHandler, setDefaultSettings, makeTransaction };

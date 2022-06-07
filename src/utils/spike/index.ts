@@ -11,7 +11,7 @@ const formatSpikeClient = (payload: any) => ({
     expiration: new Date(payload.exp * 1000),
 });
 
-const validateSpikeJWT = async (token: string, validations: ISpikeJWTValidations): Promise<SpikeClient> => {
+export const validateSpikeJWT = async (token: string, validations: ISpikeJWTValidations): Promise<SpikeClient> => {
     const { scope, clientId, clientName, ...jwtVerifyOptions } = validations;
 
     const payload = jwt.verify(token, await getPK(), {
@@ -32,5 +32,3 @@ const validateSpikeJWT = async (token: string, validations: ISpikeJWTValidations
 
     return formatSpikeClient(payload);
 };
-
-export { validateSpikeJWT };

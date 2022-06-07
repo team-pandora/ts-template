@@ -4,7 +4,7 @@ import logger from '../utils/logger';
 import { getPreciseTime, prettyDuration } from '../utils/time';
 import { ServerError } from './error';
 
-const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const { statusCode } = res;
 
     const meta = {
@@ -38,9 +38,7 @@ const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
     next();
 };
 
-const setStartTime = (_req: Request, res: Response, next: NextFunction) => {
+export const setStartTime = (_req: Request, res: Response, next: NextFunction) => {
     res.locals.startTime = getPreciseTime();
     next();
 };
-
-export { loggerMiddleware, setStartTime };

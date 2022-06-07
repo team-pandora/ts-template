@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 
-interface ISpikeJWTValidations {
+export interface ISpikeJWTValidations {
     audience: string | RegExp;
     scope: Array<string>;
     clientId?: string;
@@ -12,7 +12,7 @@ interface ISpikeJWTValidations {
     maxAge?: number | string;
 }
 
-interface SpikeClient {
+export interface SpikeClient {
     scopes: Array<string>;
     clientId: string;
     clientName: string;
@@ -29,5 +29,3 @@ declare global {
         }
     }
 }
-
-export { ISpikeJWTValidations, SpikeClient };
