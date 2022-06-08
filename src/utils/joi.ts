@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import * as Joi from 'joi';
-import { wrapValidator } from './express';
+import wrapMiddleware from './express';
 
 export const JoiMongoObjectId = Joi.string().hex().length(24);
 
@@ -33,7 +33,7 @@ const ValidateRequest = (schema: Joi.ObjectSchema<any>, options: Joi.ValidationO
         }
     };
 
-    return wrapValidator(validator);
+    return wrapMiddleware(validator);
 };
 
 export default ValidateRequest;

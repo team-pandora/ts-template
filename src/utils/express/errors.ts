@@ -7,5 +7,3 @@ export const mongoDuplicateKeyError = (error: any) =>
         `Duplicate key error: Object with ${JSON.stringify(error.keyValue)} already exists.`,
         error,
     );
-
-export default { mongoDuplicateKeyError };

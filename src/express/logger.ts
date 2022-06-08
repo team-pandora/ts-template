@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { ServerError } from '../../express/error';
-import logger from '../logger';
-import { getPreciseTime, prettyDuration } from '../time';
+import logger from '../utils/logger';
+import { getPreciseTime, prettyDuration } from '../utils/time';
+import { ServerError } from './error';
 
-const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const { statusCode } = res;
 
     const meta = {
@@ -26,7 +26,7 @@ const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
             );
             break;
 
-        case statusCode < StatusCodes.INTERNAL_SERVER_ERROR && statusCode >= StatusCodes.BAD_REQUEST:
+        case statusCode >= StatusCodes.BAD_REQUEST:
             logger.log('warn', `Request error: ${error.message}`, meta);
             break;
 
@@ -38,9 +38,7 @@ const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
     next();
 };
 
-const setStartTime = (_req: Request, res: Response, next: NextFunction) => {
+export const setStartTime = (_req: Request, res: Response, next: NextFunction) => {
     res.locals.startTime = getPreciseTime();
     next();
 };
-
-export { loggerMiddleware, setStartTime };

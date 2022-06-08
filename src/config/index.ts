@@ -18,6 +18,21 @@ const config = {
             factor: env.get('RABBIT_RETRY_FACTOR').default(1.8).asFloatPositive(),
         },
     },
+    spike: {
+        enabled: env.get('SPIKE_ENABLED').required().asBool(),
+        audience: env.get('SPIKE_AUDIENCE').required().asString(),
+        publicKey: {
+            path: env.get('SPIKE_PUBLIC_KEY_PATH').default('./certificate/publicKey.pem').asString(),
+            downloadUri: env.get('SPIKE_PUBLIC_KEY_DOWNLOAD_URI').required().asUrlString(),
+            renewalIntervalMs: env.get('SPIKE_PUBLIC_KEY_RENEWAL_INTERVAL_MS').default('0').asInt(),
+        },
+    },
+    shraga: {
+        enabled: env.get('SHRAGA_ENABLED').required().asBool(),
+        url: env.get('SHRAGA_URL').required().asString(),
+        secret: env.get('SHRAGA_SECRET').default('secret').asString(),
+        callbackUrl: env.get('SHRAGA_CALLBACK_URL').required().asString(),
+    },
 };
 
 export default config;
