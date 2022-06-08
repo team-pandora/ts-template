@@ -5,7 +5,7 @@ const fsPromises = fs.promises;
 
 export interface IPublicKeyManagerConfig {
     path: string;
-    downloadUrl: string;
+    downloadUri: string;
     renewalIntervalMs?: number;
 }
 
@@ -14,13 +14,13 @@ export class PublicKeyManager {
 
     private path: string;
 
-    private downloadUrl: string;
+    private downloadUri: string;
 
     private renewalInterval: NodeJS.Timer;
 
     constructor(PKConfig: IPublicKeyManagerConfig) {
         this.path = PKConfig.path;
-        this.downloadUrl = PKConfig.downloadUrl;
+        this.downloadUri = PKConfig.downloadUri;
         if (Number(PKConfig.renewalIntervalMs) > 0) {
             this.renewalInterval = setInterval(this.renewPublicKey.bind(this), PKConfig.renewalIntervalMs);
         }
@@ -34,10 +34,10 @@ export class PublicKeyManager {
     }
 
     private async downloadPublicKey(): Promise<string> {
-        const { status, data: pk } = await axios.get(this.downloadUrl);
+        const { status, data: pk } = await axios.get(this.downloadUri);
 
         if (status !== 200) {
-            throw new Error(`Failed to download public key at: ${this.downloadUrl}`);
+            throw new Error(`Failed to download public key at: ${this.downloadUri}`);
         }
 
         // No need to await, its ok if this fails

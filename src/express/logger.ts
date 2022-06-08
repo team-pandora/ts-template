@@ -26,7 +26,7 @@ export const loggerMiddleware = (req: Request, res: Response, next: NextFunction
             );
             break;
 
-        case statusCode < StatusCodes.INTERNAL_SERVER_ERROR && statusCode >= StatusCodes.BAD_REQUEST:
+        case statusCode >= StatusCodes.BAD_REQUEST:
             logger.log('warn', `Request error: ${error.message}`, meta);
             break;
 

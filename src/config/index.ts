@@ -23,15 +23,15 @@ const config = {
         audience: env.get('SPIKE_AUDIENCE').required().asString(),
         publicKey: {
             path: env.get('SPIKE_PUBLIC_KEY_PATH').default('./certificate/publicKey.pem').asString(),
-            downloadUrl: env.get('SPIKE_PUBLIC_KEY_DOWNLOAD_URL').required().asUrlString(),
+            downloadUri: env.get('SPIKE_PUBLIC_KEY_DOWNLOAD_URI').required().asUrlString(),
             renewalIntervalMs: env.get('SPIKE_PUBLIC_KEY_RENEWAL_INTERVAL_MS').default('0').asInt(),
         },
     },
     shraga: {
         enabled: env.get('SHRAGA_ENABLED').required().asBool(),
-        URL: env.get('SHRAGA_URL').required().asString(),
+        url: env.get('SHRAGA_URL').required().asString(),
         secret: env.get('SHRAGA_SECRET').default('secret').asString(),
-        callbackURL: env.get('SHRAGA_CALLBACK_URL').required().asString(),
+        callbackUrl: env.get('SHRAGA_CALLBACK_URL').required().asString(),
     },
 };
 

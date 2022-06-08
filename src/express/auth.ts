@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import config from '../config';
 import wrapMiddleware from '../utils/express';
-import { formatShragaUser, verifyShragaJwt } from '../utils/shraga';
+import { verifyShragaJwt } from '../utils/shraga';
 import { validateSpikeJWT } from '../utils/spike';
 import { ISpikeJWTValidations } from '../utils/spike/interface';
 import { ServerError } from './error';
@@ -31,11 +31,9 @@ const unwrappedShragaAuthMiddleware = async (req: Request) => {
     const token = req.cookies['access-token'];
     if (!token) throw new ServerError(StatusCodes.UNAUTHORIZED, 'Missing JWT access token.');
 
-    const user = await verifyShragaJwt(token).catch((err) => {
+    req.user = await verifyShragaJwt(token, true).catch((err) => {
         throw new ServerError(StatusCodes.UNAUTHORIZED, `Failed to validate JWT access token: ${err.message}`);
     });
-
-    req.user = formatShragaUser(user);
 };
 
 const unwrappedShragaLoginMiddleware = async (req: Request, res: Response) => {
@@ -43,9 +41,9 @@ const unwrappedShragaLoginMiddleware = async (req: Request, res: Response) => {
     if (!(typeof relayState === 'string'))
         throw new ServerError(StatusCodes.BAD_REQUEST, 'Missing or Invalid RelayState in query.');
 
-    const { URL, callbackURL, secret } = config.shraga;
+    const { url, callbackUrl, secret } = config.shraga;
     res.redirect(
-        `${URL}/setCallback/${encodeURIComponent(callbackURL)}` +
+        `${url}/setCallback/${encodeURIComponent(callbackUrl)}` +
             `?SignInSecret=${encodeURIComponent(secret)}` +
             `&useEnrichId=true` +
             `&RelayState=${relayState}`,

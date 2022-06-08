@@ -26,13 +26,11 @@ export const makeTransaction = async <Type>(
 ): Promise<Type> => {
     const session = await mongoose.startSession();
     try {
-        session.startTransaction();
-        const result = await transaction(session);
-        await session.commitTransaction();
-        return result;
-    } catch (err) {
-        await session.abortTransaction();
-        throw err;
+        let result: Type;
+        await session.withTransaction(async () => {
+            result = await transaction(session);
+        });
+        return result!;
     } finally {
         session.endSession();
     }
