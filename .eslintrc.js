@@ -37,5 +37,6 @@ module.exports = {
         'no-undef': 'off', // Checked by typescript
         'no-default-export': 'off',
         'import/prefer-default-export': 'off',
+        'no-underscore-dangle': 'off',
     },
 };

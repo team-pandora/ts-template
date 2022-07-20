@@ -5,6 +5,21 @@ const config = {
     service: {
         port: env.get('PORT').required().asPortNumber(),
         useCors: env.get('USE_CORS').default('false').asBool(),
+        kartoffelUrl: env.get('KARTOFFEL_URL').asString(),
+        linkSecret: env.get('LINK_SECRET').required().asString(),
+        spikeClientsApiScope: env.get('SPIKE_CLIENTS_API_SCOPE').required().asString(),
+    },
+    TransfersCrud: {
+        url: env.get('TRANSFERS_CRUD_URL').asString(),
+        timeout: env.get('TRANSFERS_CRUD_TIMEOUT').default('10000').asInt(),
+        maxContentLength: env.get('TRANSFERS_CRUD_MAX_CONTENT_LENGTH').default('1000000000000').asInt(),
+        maxBodyLength: env.get('TRANSFERS_CRUD_MAX_CONTENT_LENGTH').default('1000000000000').asInt(),
+    },
+    storageService: {
+        url: env.get('STORAGE_SERVICE_URL').asString(),
+        timeout: env.get('STORAGE_SERVICE_TIMEOUT').default('10000').asInt(),
+        maxContentLength: env.get('TRANSFERS_CRUD_MAX_CONTENT_LENGTH').default('1000000000').asInt(),
+        maxBodyLength: env.get('TRANSFERS_CRUD_MAX_CONTENT_LENGTH').default('1000000000').asInt(),
     },
     mongo: {
         uri: env.get('MONGO_URI').required().asUrlString(),

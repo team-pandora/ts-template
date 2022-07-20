@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { shragaCallbackMiddleware, shragaLoginMiddleware } from './auth';
 import { ServerError } from './error';
-import featuresRouter from './features/router';
+import featuresRouter from './incomingFile/router';
 
 const appRouter = Router();
 
