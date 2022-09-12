@@ -1,12 +1,11 @@
 import * as mongoose from 'mongoose';
 import { mongoDuplicateKeyError } from './express/errors';
 
-export function setDefaultSettings(schema: mongoose.Schema) {
-    // eslint-disable-next-line func-names
-    schema.pre('*', function () {
-        this.lean();
+export const setDefaultSettings = (schema: mongoose.Schema) => {
+    schema.pre(/.*/, function setSettings() {
+        if (typeof this.lean === 'function') this.lean();
     });
-}
+};
 
 function errorHandler(error: any, _res: any, next: any) {
     if (error.code === 11000) {

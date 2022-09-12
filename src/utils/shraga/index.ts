@@ -2,12 +2,12 @@ import * as jwt from 'jsonwebtoken';
 import config from '../../config';
 
 const formatShragaUser = (payload: { [key: string]: any }): any => ({
-    id: payload.id,
+    id: payload.genesisId,
     adfsId: payload.adfsId,
-    genesisId: payload.genesisId,
     firstName: payload.name?.firstName,
     lastName: payload.name?.lastName,
     displayName: payload.displayName,
+    mail: payload.email,
     expiration: payload.exp,
     issuedAt: payload.iat,
 });

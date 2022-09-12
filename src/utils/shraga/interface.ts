@@ -1,10 +1,10 @@
 export interface ShragaUser {
     id: string;
     adfsId: string;
-    genesisId: string;
     firstName: string;
     lastName: string;
     displayName: string;
+    mail: string;
     expiration: number;
     issuedAt: number;
 }
