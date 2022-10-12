@@ -6,15 +6,22 @@ on:
 permissions:
   checks: write
   pull-requests: write
+  contents: read
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+
       - name: Install dependencies
         run: npm i
-      - uses: mrdivyansh/eslint-action@v1.0.7
+
+      - name: Lint
+        uses: mrdivyansh/eslint-action@v1.0.7
         if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           repo-token: ${{secrets.GITHUB_TOKEN}}
@@ -26,9 +33,12 @@ jobs:
       - lint
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
 
-      - name: test
+      - name: Test
         run: |
           docker compose up -d mongo rabbit
           npm i
