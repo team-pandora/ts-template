@@ -8,8 +8,6 @@ import { ISpikeJWTValidations } from '../utils/spike/interface';
 import { ServerError } from './error';
 
 const unwrappedSpikeAuthMiddlewareFactory = (scopes: Array<string>) => {
-    if (!config.spike.enabled) return async () => {};
-
     const validations: ISpikeJWTValidations = {
         audience: config.spike.audience,
         scope: scopes,
@@ -26,12 +24,10 @@ const unwrappedSpikeAuthMiddlewareFactory = (scopes: Array<string>) => {
 };
 
 const unwrappedShragaAuthMiddleware = async (req: Request) => {
-    if (!config.shraga.enabled) return;
-
     const token = req.cookies['access-token'];
     if (!token) throw new ServerError(StatusCodes.UNAUTHORIZED, 'Missing JWT access token.');
 
-    req.user = await verifyShragaJwt(token, true).catch((err) => {
+    req.user = await verifyShragaJwt(token).catch((err) => {
         throw new ServerError(StatusCodes.UNAUTHORIZED, `Failed to validate JWT access token: ${err.message}`);
     });
 };
@@ -59,9 +55,9 @@ const unwrappedShragaCallbackMiddleware = async (req: Request, res: Response) =>
         throw new ServerError(StatusCodes.UNAUTHORIZED, `Failed to validate JWT access token: ${err.message}`);
     });
 
-    res.cookie('access-token', token, { maxAge: new Date(payload.exp * 1000).getTime() - Date.now() });
+    res.cookie('access-token', token, { maxAge: new Date(payload.expiration * 1000).getTime() - Date.now() });
 
-    res.redirect(payload.RelayState || '/');
+    res.redirect(payload.relayState || '/');
 };
 
 export const spikeAuthMiddlewareFactory = (scopes: Array<string>) =>

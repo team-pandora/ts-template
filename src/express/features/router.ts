@@ -1,24 +1,33 @@
 import { Router } from 'express';
 import wrapMiddleware from '../../utils/express';
 import ValidateRequest from '../../utils/joi';
-import { shragaAuthMiddleware as shraga, spikeAuthMiddlewareFactory as spike } from '../auth';
+import { shragaAuthMiddleware, spikeAuthMiddlewareFactory } from '../auth';
 import * as FeaturesController from './controller';
-import * as FeaturesValidator from './validator';
-import { createFeatureRequestSchema, getFeaturesRequestSchema } from './validator.schema';
+import * as validator from './validator.schema';
 
 const featuresRouter: Router = Router();
 
-featuresRouter.get('/', ValidateRequest(getFeaturesRequestSchema), wrapMiddleware(FeaturesController.getFeatures));
-featuresRouter.post('/', ValidateRequest(createFeatureRequestSchema), wrapMiddleware(FeaturesController.createFeature));
 featuresRouter.get(
-    '/hardToValidateWithSchema',
-    wrapMiddleware(FeaturesValidator.somethingThatIsImpossibleToValidateWithSchema),
+    '/mongo',
+    ValidateRequest(validator.getFeaturesRequestSchema),
+    wrapMiddleware(FeaturesController.getFeatures),
+);
+featuresRouter.post(
+    '/mongo',
+    ValidateRequest(validator.createFeatureRequestSchema),
+    wrapMiddleware(FeaturesController.createFeature),
+);
+
+featuresRouter.post(
+    '/rabbit',
+    ValidateRequest(validator.sendRabbitMessageRequestSchema),
+    wrapMiddleware(FeaturesController.sendRabbitMessage),
 );
 
 /* SHRAGA AUTHENTICATED ROUTE */
-featuresRouter.get('/shraga', shraga, wrapMiddleware(FeaturesController.getShraga));
+featuresRouter.get('/shraga', shragaAuthMiddleware, wrapMiddleware(FeaturesController.getShraga));
 
 /* SPIKE AUTHENTICATED ROUTE */
-featuresRouter.get('/spike', spike(['read']), wrapMiddleware(FeaturesController.getSpike));
+featuresRouter.get('/spike', spikeAuthMiddlewareFactory(['read']), wrapMiddleware(FeaturesController.getSpike));
 
 export default featuresRouter;

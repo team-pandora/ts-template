@@ -1,3 +1,10 @@
 {
-  "recommendations": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint", "streetsidesoftware.code-spell-checker"]
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "streetsidesoftware.code-spell-checker",
+    "ms-azuretools.vscode-docker",
+    "william-voyek.vscode-nginx",
+    "redhat.vscode-yaml"
+  ]
 }

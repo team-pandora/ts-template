@@ -5,12 +5,11 @@ export const sleep = (ms: number) => {
 };
 
 export const prettyDuration = (ms: number) => {
-    const roundedMs = Math.round(ms * 1000) / 1000;
-    const seconds = Math.floor(roundedMs / 1000);
+    const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
 
-    const msLeft = roundedMs % 1000;
+    const msLeft = ms % 1000;
     const secondsLeft = seconds % 60;
     const minutesLeft = minutes % 60;
 
@@ -19,7 +18,7 @@ export const prettyDuration = (ms: number) => {
     if (hours > 0) result.push(`${hours}h`);
     if (minutes > 0) result.push(`${minutesLeft}m`);
     if (seconds > 0) result.push(`${secondsLeft}s`);
-    result.push(`${msLeft}ms`);
+    result.push(`${msLeft.toFixed(3)}ms`);
 
     return result.join(' ');
 };

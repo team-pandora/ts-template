@@ -1,7 +1,8 @@
 import * as jwt from 'jsonwebtoken';
 import config from '../../config';
+import { ShragaUser, User } from './interface';
 
-const formatShragaUser = (payload: { [key: string]: any }): any => ({
+const formatShragaUser = (payload: ShragaUser): User => ({
     id: payload.genesisId,
     adfsId: payload.adfsId,
     firstName: payload.name?.firstName,
@@ -10,9 +11,10 @@ const formatShragaUser = (payload: { [key: string]: any }): any => ({
     mail: payload.email,
     expiration: payload.exp,
     issuedAt: payload.iat,
+    relayState: payload.RelayState,
 });
 
-export const verifyShragaJwt = async (token: string, format: boolean = false): Promise<any> => {
+export const verifyShragaJwt = async (token: string) => {
     const payload = jwt.verify(token, Buffer.from(config.shraga.secret, 'base64'), {
         clockTimestamp: Date.now() / 1000,
     });
@@ -21,5 +23,5 @@ export const verifyShragaJwt = async (token: string, format: boolean = false): P
         throw new Error('Invalid JWT payload');
     }
 
-    return format ? formatShragaUser(payload) : payload;
+    return formatShragaUser(payload as ShragaUser);
 };

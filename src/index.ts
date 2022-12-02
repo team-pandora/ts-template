@@ -1,4 +1,4 @@
-import menash, { ConsumerMessage } from 'menashmq';
+import menash from 'menashmq';
 import * as mongoose from 'mongoose';
 import config from './config';
 import Server from './express/server';
@@ -11,25 +11,25 @@ const initializeMongo = async () => {
 
     await mongoose.connect(mongo.uri);
 
-    logger.log('info', 'Mongo connection established');
+    logger.log('info', 'Mongo connected');
 };
 
 const initializeRabbit = async () => {
+    const { uri, retryOptions, featuresQueue } = rabbit;
+
     logger.log('info', 'Connecting to Rabbit...');
 
-    await menash.connect(rabbit.uri, rabbit.retryOptions);
+    await menash.connect(uri, retryOptions);
 
     logger.log('info', 'Rabbit connected');
 
-    const featureConsumeFunction = (msg: ConsumerMessage) => {
-        logger.log('info', 'Received message: ', msg.getContent());
-    };
+    const { name, durable, prefetch } = featuresQueue;
 
-    await menash.declareTopology({
-        queues: [{ name: 'feature-queue', options: { durable: true } }],
-        exchanges: [{ name: 'feature-exchange', type: 'fanout', options: { durable: true } }],
-        bindings: [{ source: 'feature-exchange', destination: 'feature-queue' }],
-        consumers: [{ queueName: 'feature-queue', onMessage: featureConsumeFunction }],
+    const queue = await menash.declareQueue(name, { durable });
+    await queue.prefetch(prefetch);
+    await queue.activateConsumer(async (msg) => {
+        logger.log('info', `Received message from Rabbit: ${msg.getContent()}`);
+        msg.ack();
     });
 
     logger.log('info', 'Rabbit initialized');

@@ -7,13 +7,17 @@ export const setDefaultSettings = (schema: mongoose.Schema) => {
     });
 };
 
-function errorHandler(error: any, _res: any, next: any) {
-    if (error.code === 11000) {
+const errorHandler = (
+    error: { code?: number; keyValue?: object } & mongoose.CallbackError,
+    _: unknown,
+    next: mongoose.CallbackWithoutResultAndOptionalError,
+) => {
+    if (error?.code === 11000) {
         next(mongoDuplicateKeyError(error));
     } else {
-        next();
+        next(error);
     }
-}
+};
 
 export const setErrorHandler = (schema: mongoose.Schema) => {
     schema.post(['update', 'updateMany', 'updateOne', 'findOneAndUpdate'], errorHandler);

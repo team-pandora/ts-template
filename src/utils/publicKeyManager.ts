@@ -1,7 +1,6 @@
 import axios from 'axios';
-import * as fs from 'fs';
-
-const fsPromises = fs.promises;
+import * as fs from 'fs/promises';
+import logger from './logger';
 
 export interface IPublicKeyManagerConfig {
     path: string;
@@ -34,29 +33,25 @@ export class PublicKeyManager {
     }
 
     private async downloadPublicKey(): Promise<string> {
-        const { status, data: pk } = await axios.get(this.downloadUri);
-
-        if (status !== 200) {
-            throw new Error(`Failed to download public key at: ${this.downloadUri}`);
-        }
+        const { data: pk } = await axios.get(this.downloadUri).catch((error) => {
+            throw new Error(`Failed to download public key at: ${this.downloadUri} - ${error.message}`);
+        });
 
         // No need to await, its ok if this fails
-        fsPromises
-            .mkdir(this.path.substring(0, this.path.lastIndexOf('/')) || '.', { recursive: true })
-            .then(() => fsPromises.writeFile(this.path, pk));
+        fs.mkdir(this.path.substring(0, this.path.lastIndexOf('/')) || '.', { recursive: true })
+            .then(() => fs.writeFile(this.path, pk))
+            .catch((err) => {
+                logger.log('warn', `Failed to write public key to file: ${err}`);
+            });
 
         return pk;
     }
 
     private async loadPublicKey(): Promise<string> {
-        try {
-            return await fsPromises.readFile(this.path, 'utf8');
-        } catch (error: any) {
-            if (error.code === 'ENOENT') {
-                return this.downloadPublicKey();
-            }
+        return fs.readFile(this.path, 'utf8').catch((error) => {
+            if (error.code === 'ENOENT') return this.downloadPublicKey();
             throw error;
-        }
+        });
     }
 
     public async reloadPublicKey() {

@@ -1,5 +1,5 @@
 import config from '../../config';
-import PublicKeyManager from '../publicKeyManager';
+import { PublicKeyManager } from '../publicKeyManager';
 
 const PKManager = new PublicKeyManager(config.spike.publicKey);
 

@@ -13,6 +13,17 @@ export interface ISpikeJWTValidations {
 }
 
 export interface SpikeClient {
+    aud: string;
+    sub: string;
+    scope: string[];
+    clientId: string;
+    clientName: string;
+    iat: number;
+    exp: number;
+    iss: string;
+}
+
+export interface Client {
     scopes: Array<string>;
     clientId: string;
     clientName: string;
@@ -22,8 +33,8 @@ export interface SpikeClient {
 
 // Extend default express namespace to include spike client info
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Express {
-        export interface Client extends SpikeClient {}
         interface Request {
             client: Client;
         }

@@ -1,19 +1,39 @@
 export interface ShragaUser {
     id: string;
     adfsId: string;
+    genesisId: string;
+    name: { firstName: string; lastName: string };
+    email: string;
+    displayName: string;
+    upn: string;
+    provider: string;
+    entityType: string;
+    job: string;
+    phoneNumbers: string[];
+    clearance: string;
+    photo: string;
+    RelayState: string;
+    jti: string;
+    iat: number;
+    exp: number;
+}
+
+export interface User {
+    id: string;
+    adfsId: string;
     firstName: string;
     lastName: string;
     displayName: string;
     mail: string;
     expiration: number;
     issuedAt: number;
+    relayState: string;
 }
 
-// Extend default express namespace to include shraga user info
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Express {
-        export interface User extends ShragaUser {}
-        interface Request {
+        export interface Request {
             user: User;
         }
     }

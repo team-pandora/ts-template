@@ -1,25 +1,26 @@
 import * as Joi from 'joi';
 import { JoiMongoObjectId } from '../../utils/joi';
 
-/**
- * GET /api/features?data=someData123
- */
 export const getFeaturesRequestSchema = Joi.object({
-    query: {
+    query: Joi.object({
         _id: JoiMongoObjectId.optional(),
         data: Joi.string().alphanum().optional(),
-    },
+    }).unknown(),
     body: {},
     params: {},
 });
 
-/**
- * POST /api/features/
- * { data: 'someData123' }
- */
 export const createFeatureRequestSchema = Joi.object({
     body: {
         data: Joi.string().alphanum().required(),
+    },
+    query: {},
+    params: {},
+});
+
+export const sendRabbitMessageRequestSchema = Joi.object({
+    body: {
+        message: Joi.string().required(),
     },
     query: {},
     params: {},

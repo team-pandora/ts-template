@@ -9,6 +9,11 @@ export const createFeature = async (req: Request, res: Response) => {
     res.json(await FeaturesManager.createFeature(req.body));
 };
 
+export const sendRabbitMessage = async (req: Request, res: Response) => {
+    await FeaturesManager.sendRabbitMessage(req.body.message);
+    res.send('Message sent');
+};
+
 export const getShraga = async (req: Request, res: Response) => {
     res.json(req.user);
 };

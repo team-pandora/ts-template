@@ -1,9 +1,9 @@
 import * as jwt from 'jsonwebtoken';
 import { isSubsetArray } from '../object';
-import { ISpikeJWTValidations, SpikeClient } from './interface';
+import { Client, ISpikeJWTValidations, SpikeClient } from './interface';
 import { getPK } from './publicKey';
 
-const formatSpikeClient = (payload: any) => ({
+const formatSpikeClient = (payload: SpikeClient): Client => ({
     scopes: payload.scope,
     clientId: payload.clientId,
     clientName: payload.clientName,
@@ -11,7 +11,7 @@ const formatSpikeClient = (payload: any) => ({
     expiration: new Date(payload.exp * 1000),
 });
 
-export const validateSpikeJWT = async (token: string, validations: ISpikeJWTValidations): Promise<SpikeClient> => {
+export const validateSpikeJWT = async (token: string, validations: ISpikeJWTValidations): Promise<Client> => {
     const { scope, clientId, clientName, ...jwtVerifyOptions } = validations;
 
     const payload = jwt.verify(token, await getPK(), {
@@ -30,5 +30,5 @@ export const validateSpikeJWT = async (token: string, validations: ISpikeJWTVali
     if (scope && !(Array.isArray(payload.scope) && isSubsetArray(scope, payload.scope)))
         throw new Error('Invalid JWT scope');
 
-    return formatSpikeClient(payload);
+    return formatSpikeClient(payload as SpikeClient);
 };

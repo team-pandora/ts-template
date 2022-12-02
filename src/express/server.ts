@@ -33,6 +33,7 @@ class Server {
         app.use(helmet());
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
+        app.use(express.raw({ type: (req) => !req.headers['content-type'] }));
         app.use(cookieParser());
 
         app.use(appRouter);

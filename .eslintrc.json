@@ -1,0 +1,50 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "prettier", "import", "node", "jest", "promise", "regexp", "html"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "plugin:node/recommended",
+    "plugin:jest/recommended",
+    "plugin:promise/recommended",
+    "plugin:regexp/recommended"
+  ],
+  "env": {
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "settings": {
+    "node": { "tryExtensions": [".js", ".json", ".ts"] }
+  },
+  "ignorePatterns": ["dist"],
+  "rules": {
+    "no-unused-vars": "off", // Checked by typescript
+    "no-undef": "off", // Checked by typescript
+    "node/no-unsupported-features/es-syntax": ["error", { "ignores": ["modules"] }],
+    "@typescript-eslint/no-non-null-assertion": "off"
+  },
+  "overrides": [
+    {
+      "files": ["tests/**/*.ts"],
+      "parserOptions": { "project": "./tests/tsconfig.json" },
+      "rules": { "node/no-unpublished-import": "off", "node/no-unpublished-require": "off" },
+      "env": { "jest": true, "node": true }
+    }
+  ]
+}
