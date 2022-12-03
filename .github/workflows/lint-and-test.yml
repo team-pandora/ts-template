@@ -1,7 +1,6 @@
 name: Lint and Test
 
-on:
-  pull_request:
+on: [pull_request]
 
 permissions:
   checks: write
@@ -21,11 +20,10 @@ jobs:
         run: npm i
 
       - name: Lint
-        uses: mrdivyansh/eslint-action@v1.0.7
-        if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: a-b-r-o-w-n/eslint-action@v2
         with:
           repo-token: ${{secrets.GITHUB_TOKEN}}
-          eslint-rc: .eslintrc.js
+          quiet: 'false'
 
   test:
     runs-on: ubuntu-latest
