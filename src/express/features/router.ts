@@ -24,6 +24,24 @@ featuresRouter.post(
     wrapMiddleware(FeaturesController.sendRabbitMessage),
 );
 
+featuresRouter.get(
+    '/minio/buckets/:bucketName/objects/:objectName',
+    ValidateRequest(validator.downloadFileRequestSchema),
+    wrapMiddleware(FeaturesController.downloadFile),
+);
+
+featuresRouter.post(
+    '/minio/buckets/:bucketName/objects/:objectName',
+    ValidateRequest(validator.uploadFileRequestSchema),
+    wrapMiddleware(FeaturesController.uploadFile),
+);
+
+featuresRouter.delete(
+    '/minio/buckets/:bucketName/objects/:objectName',
+    ValidateRequest(validator.deleteFileRequestSchema),
+    wrapMiddleware(FeaturesController.deleteFile),
+);
+
 /* SHRAGA AUTHENTICATED ROUTE */
 featuresRouter.get('/shraga', shragaAuthMiddleware, wrapMiddleware(FeaturesController.getShraga));
 

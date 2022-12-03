@@ -23,6 +23,18 @@ const config = {
             prefetch: env.get('RABBIT_FEATURES_QUEUE_PREFETCH').default(1).asIntPositive(),
         },
     },
+    minio: {
+        endPoint: env.get('MINIO_ENDPOINT').required().asString(),
+        port: env.get('MINIO_PORT').default(9000).asPortNumber(),
+        region: env.get('MINIO_REGION').default('region').asString(),
+        accessKey: env.get('MINIO_ROOT_USER').default('minio').asString(),
+        secretKey: env.get('MINIO_ROOT_PASSWORD').default('minio123').asString(),
+        useSSL: env.get('MINIO_USE_SSL').default('false').asBool(),
+        partSize: env
+            .get('MINIO_PART_SIZE')
+            .default(10 * 1000 * 1000)
+            .asInt(),
+    },
     spike: {
         audience: env.get('SPIKE_AUDIENCE').required().asString(),
         publicKey: {

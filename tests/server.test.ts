@@ -15,16 +15,14 @@ describe('server tests', () => {
 
     describe('/isAlive', () => {
         it('should return alive', async () => {
-            const { text, status } = await request(app).get('/isAlive');
-            expect(status).toBe(StatusCodes.OK);
+            const { text } = await request(app).get('/isAlive').expect(StatusCodes.OK);
             expect(text).toBe('alive');
         });
     });
 
     describe('/unknownRoute', () => {
         it('should return status code 404', async () => {
-            const { status } = await request(app).get('/unknownRoute');
-            expect(status).toBe(StatusCodes.NOT_FOUND);
+            await request(app).get('/unknownRoute').expect(StatusCodes.NOT_FOUND);
         });
     });
 });

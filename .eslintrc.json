@@ -43,7 +43,11 @@
     {
       "files": ["tests/**/*.ts"],
       "parserOptions": { "project": "./tests/tsconfig.json" },
-      "rules": { "node/no-unpublished-import": "off", "node/no-unpublished-require": "off" },
+      "rules": {
+        "node/no-unpublished-import": "off",
+        "node/no-unpublished-require": "off",
+        "jest/expect-expect": "off"
+      },
       "env": { "jest": true, "node": true }
     }
   ]

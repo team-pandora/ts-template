@@ -25,3 +25,31 @@ export const sendRabbitMessageRequestSchema = Joi.object({
     query: {},
     params: {},
 });
+
+const objectActionParamsSchema = Joi.object({
+    bucketName: Joi.string().required(),
+    objectName: Joi.string().required(),
+});
+
+export const uploadFileRequestSchema = Joi.object({
+    headers: Joi.object({
+        'content-type': Joi.string()
+            .regex(/.*multipart\/form-data.*boundary.*/)
+            .required(),
+    }).unknown(),
+    query: {},
+    params: objectActionParamsSchema,
+    body: {},
+});
+
+export const downloadFileRequestSchema = Joi.object({
+    query: {},
+    params: objectActionParamsSchema,
+    body: {},
+});
+
+export const deleteFileRequestSchema = Joi.object({
+    query: {},
+    params: objectActionParamsSchema,
+    body: {},
+});

@@ -12,6 +12,16 @@ services:
       - 5672:5672
       - 15672:15672
 
+  minio:
+    image: minio/minio
+    ports:
+      - 9000:9000
+      - 3000:3000
+    environment:
+      - MINIO_ROOT_USER=minio
+      - MINIO_ROOT_PASSWORD=minio123
+    command: "minio server --console-address :3000 /data"
+
   feature:
     build: .
     # image: ghcr.io/team-pandora/ts-template
@@ -22,6 +32,7 @@ services:
       MONGO_FEATURES_COLLECTION_NAME: features
       RABBIT_URI: amqp://rabbit
       RABBIT_FEATURES_QUEUE_NAME: features
+      MINIO_ENDPOINT: minio
       SPIKE_AUDIENCE: 2rYAQb~MpuJ5JDk~yBc2tk6wgajjPy
       SPIKE_PUBLIC_KEY_DOWNLOAD_URI: https://ospike.northeurope.cloudapp.azure.com/.well-known/publickey.pem
       SHRAGA_URL: https://shraga.shraga.branch-yesodot.org
