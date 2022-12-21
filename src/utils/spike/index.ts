@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import config from '../../config';
 import { isSubsetArray } from '../object';
 import redisClient from '../redis';
+import { SEC, sleep } from '../time';
 import { Client, ISpikeJWTValidations, SpikeClient } from './interface';
 import { getPK } from './publicKey';
 
@@ -39,28 +40,46 @@ export const validateSpikeJWT = async (token: string, validations: ISpikeJWTVali
 };
 
 export const getSpikeToken = async (audience: string, refresh = false) => {
-    const redisKey = `${spike.redisTokenPrefix}${audience}`;
+    const tokenKey = `${spike.redisTokenPrefix}token-${audience}`;
 
     if (!refresh) {
-        const savedToken = await redisClient.get(redisKey);
+        const savedToken = await redisClient.get(tokenKey);
         if (savedToken) return savedToken;
     }
 
-    const { url, getTokenRoute, clientId, clientSecret } = spike;
+    const lockKey = `${spike.redisTokenPrefix}lock`;
 
-    const response = await axios.post(
-        `${url}${getTokenRoute}`,
-        { grant_type: 'client_credentials', audience },
-        { headers: { Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}` } },
-    );
+    const timeoutAt = Date.now() + spike.getTokenTimeout * SEC;
 
-    const { access_token, expires_in } = response.data;
+    while (!(await redisClient.set(lockKey, 'true', { NX: true, EX: spike.getTokenTimeout }))) {
+        if (Date.now() > timeoutAt) throw new Error('Timeout while waiting for token lock');
 
-    await redisClient
-        .multi()
-        .set(redisKey, access_token)
-        .expire(redisKey, expires_in - spike.tokenExpirationOffset)
-        .exec();
+        await sleep(spike.pollingRate);
 
-    return access_token;
+        const savedToken = await redisClient.get(tokenKey);
+        if (savedToken) return savedToken;
+    }
+
+    try {
+        await redisClient.del(tokenKey);
+
+        const { url, getTokenRoute, clientId, clientSecret } = spike;
+
+        const response = await axios.post(
+            `${url}${getTokenRoute}`,
+            { grant_type: 'client_credentials', audience },
+            {
+                headers: { Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}` },
+                timeout: spike.getTokenTimeout * SEC,
+            },
+        );
+
+        const { access_token, expires_in } = response.data;
+
+        await redisClient.set(tokenKey, access_token, { EX: expires_in - spike.getTokenTimeout });
+
+        return access_token;
+    } finally {
+        await redisClient.del(lockKey);
+    }
 };

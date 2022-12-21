@@ -1,6 +1,6 @@
 import * as env from 'env-var';
 import { MB } from '../utils/fs';
-import { MIN } from '../utils/time';
+import { MIN, SEC } from '../utils/time';
 import './dotenv';
 
 const config = {
@@ -47,7 +47,8 @@ const config = {
         audience: env.get('SPIKE_AUDIENCE').required().asString(),
         getTokenRoute: env.get('SPIKE_GET_TOKEN_ROUTE').default('/oauth2/token').asString(),
         redisTokenPrefix: env.get('SPIKE_REDIS_TOKEN_PREFIX').default('spike-').asString(),
-        tokenExpirationOffset: env.get('SPIKE_TOKEN_EXPIRATION_OFFSET').default(60).asInt(),
+        getTokenTimeout: env.get('SPIKE_TOKEN_EXPIRATION_OFFSET').default(60).asInt(),
+        pollingRate: env.get('SPIKE_POLLING_RATE').default(SEC).asInt(),
         publicKey: {
             path: env.get('SPIKE_PUBLIC_KEY_PATH').default('./certificate/publicKey.pem').asString(),
             downloadRoute: env.get('SPIKE_PUBLIC_KEY_DOWNLOAD_ROUTE').default('/.well-known/publickey.pem').asString(),
