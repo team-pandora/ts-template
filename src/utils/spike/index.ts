@@ -49,9 +49,9 @@ export const getSpikeToken = async (audience: string, refresh = false) => {
 
     const lockKey = `${spike.redisTokenPrefix}lock`;
 
-    const timeoutAt = Date.now() + spike.getTokenTimeout * SEC;
+    const timeoutAt = Date.now() + spike.getTokenTimeout;
 
-    while (!(await redisClient.set(lockKey, 'true', { NX: true, EX: spike.getTokenTimeout }))) {
+    while (!(await redisClient.set(lockKey, 'true', { NX: true, PX: spike.getTokenTimeout }))) {
         if (Date.now() > timeoutAt) throw new Error('Timeout while waiting for token lock');
 
         await sleep(spike.pollingRate);
@@ -70,13 +70,13 @@ export const getSpikeToken = async (audience: string, refresh = false) => {
             { grant_type: 'client_credentials', audience },
             {
                 headers: { Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}` },
-                timeout: spike.getTokenTimeout * SEC,
+                timeout: spike.getTokenTimeout,
             },
         );
 
         const { access_token, expires_in } = response.data;
 
-        await redisClient.set(tokenKey, access_token, { EX: expires_in - spike.getTokenTimeout });
+        await redisClient.set(tokenKey, access_token, { PX: expires_in * SEC - spike.getTokenTimeout });
 
         return access_token;
     } finally {
