@@ -3,8 +3,9 @@ import * as fs from 'fs/promises';
 import logger from './logger';
 
 export interface IPublicKeyManagerConfig {
+    url: string;
     path: string;
-    downloadUri: string;
+    downloadRoute: string;
     renewalIntervalMs?: number;
 }
 
@@ -19,7 +20,7 @@ export class PublicKeyManager {
 
     constructor(PKConfig: IPublicKeyManagerConfig) {
         this.path = PKConfig.path;
-        this.downloadUri = PKConfig.downloadUri;
+        this.downloadUri = PKConfig.url + PKConfig.downloadRoute;
         if (Number(PKConfig.renewalIntervalMs) > 0) {
             this.renewalInterval = setInterval(this.renewPublicKey.bind(this), PKConfig.renewalIntervalMs);
         }

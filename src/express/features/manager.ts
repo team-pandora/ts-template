@@ -1,5 +1,7 @@
 import { menash } from 'menashmq';
 import config from '../../config';
+import { serviceErrorHandler } from '../../utils/express/services';
+import { kartoffel } from '../services';
 import { IFeature, INewFeature } from './interface';
 import FeatureModel from './model';
 
@@ -27,4 +29,15 @@ export const createFeature = (feature: INewFeature): Promise<IFeature> => {
  */
 export const sendRabbitMessage = (message: string): Promise<void> => {
     return menash.send(config.rabbit.featuresQueue.name, message);
+};
+
+/**
+ * Search Kartoffel users.
+ * @param {string} query - The query to search.
+ */
+export const searchKartoffelUsers = async (query: string) => {
+    return kartoffel
+        .get(`/entities/search?fullName=${encodeURIComponent(query)}&digitalIdentity.source=es_name`)
+        .then(({ data }) => data)
+        .catch(serviceErrorHandler('Failed to get users by name'));
 };

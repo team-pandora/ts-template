@@ -42,10 +42,16 @@ featuresRouter.delete(
     wrapMiddleware(FeaturesController.deleteFile),
 );
 
+featuresRouter.get(
+    '/kartoffel',
+    ValidateRequest(validator.searchKartoffelUsersRequestSchema),
+    wrapMiddleware(FeaturesController.searchKartoffelUsers),
+);
+
 /* SHRAGA AUTHENTICATED ROUTE */
 featuresRouter.get('/shraga', shragaAuthMiddleware, wrapMiddleware(FeaturesController.getShraga));
 
 /* SPIKE AUTHENTICATED ROUTE */
-featuresRouter.get('/spike', spikeAuthMiddlewareFactory(['read']), wrapMiddleware(FeaturesController.getSpike));
+featuresRouter.get('/spike', spikeAuthMiddlewareFactory([]), wrapMiddleware(FeaturesController.getSpike));
 
 export default featuresRouter;

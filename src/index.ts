@@ -4,12 +4,14 @@ import config from './config';
 import Server from './express/server';
 import logger from './utils/logger';
 import minioClient from './utils/minio/client';
+import redisClient from './utils/redis';
 
 const { mongo, rabbit, service } = config;
 
 const initializeMongo = async () => {
     logger.log('info', 'Connecting to Mongo...');
 
+    mongoose.set('strictQuery', true);
     await mongoose.connect(mongo.uri).catch((err) => {
         throw new Error(`Error connecting to Mongo: ${err.message}`);
     });
@@ -50,12 +52,24 @@ const initializeMinio = async () => {
     logger.log('info', 'Minio initialized');
 };
 
+const initializeRedis = async () => {
+    logger.log('info', 'Connecting to Redis...');
+
+    await redisClient.connect().catch((err) => {
+        throw new Error(`Error connecting to Redis: ${err.message}`);
+    });
+
+    logger.log('info', 'Redis initialized');
+};
+
 const main = async () => {
     await initializeMongo();
 
     await initializeRabbit();
 
     await initializeMinio();
+
+    await initializeRedis();
 
     const server = new Server(service.port);
 

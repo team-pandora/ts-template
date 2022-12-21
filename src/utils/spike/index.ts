@@ -1,7 +1,12 @@
+import axios from 'axios';
 import * as jwt from 'jsonwebtoken';
+import config from '../../config';
 import { isSubsetArray } from '../object';
+import redisClient from '../redis';
 import { Client, ISpikeJWTValidations, SpikeClient } from './interface';
 import { getPK } from './publicKey';
+
+const { spike } = config;
 
 const formatSpikeClient = (payload: SpikeClient): Client => ({
     scopes: payload.scope,
@@ -31,4 +36,31 @@ export const validateSpikeJWT = async (token: string, validations: ISpikeJWTVali
         throw new Error('Invalid JWT scope');
 
     return formatSpikeClient(payload as SpikeClient);
+};
+
+export const getSpikeToken = async (audience: string, refresh = false) => {
+    const redisKey = `${spike.redisTokenPrefix}${audience}`;
+
+    if (!refresh) {
+        const savedToken = await redisClient.get(redisKey);
+        if (savedToken) return savedToken;
+    }
+
+    const { url, getTokenRoute, clientId, clientSecret } = spike;
+
+    const response = await axios.post(
+        `${url}${getTokenRoute}`,
+        { grant_type: 'client_credentials', audience },
+        { headers: { Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}` } },
+    );
+
+    const { access_token, expires_in } = response.data;
+
+    await redisClient
+        .multi()
+        .set(redisKey, access_token)
+        .expire(redisKey, expires_in - spike.tokenExpirationOffset)
+        .exec();
+
+    return access_token;
 };

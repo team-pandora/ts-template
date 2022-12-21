@@ -46,6 +46,10 @@ export const deleteFile = async (req: Request, res: Response) => {
     res.status(StatusCodes.OK).send({ bucketName, objectName });
 };
 
+export const searchKartoffelUsers = async (req: Request, res: Response) => {
+    res.json(await FeaturesManager.searchKartoffelUsers(req.query.query as string));
+};
+
 export const getShraga = async (req: Request, res: Response) => {
     res.json(req.user);
 };

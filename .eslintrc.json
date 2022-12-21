@@ -37,7 +37,8 @@
     "no-unused-vars": "off", // Checked by typescript
     "no-undef": "off", // Checked by typescript
     "node/no-unsupported-features/es-syntax": ["error", { "ignores": ["modules"] }],
-    "@typescript-eslint/no-non-null-assertion": "off"
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "promise/no-promise-in-callback": "off"
   },
   "overrides": [
     {
