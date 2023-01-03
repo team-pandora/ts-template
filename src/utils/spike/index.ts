@@ -1,7 +1,13 @@
+import axios from 'axios';
 import * as jwt from 'jsonwebtoken';
+import config from '../../config';
 import { isSubsetArray } from '../object';
+import redisClient from '../redis';
+import { SEC, sleep } from '../time';
 import { Client, ISpikeJWTValidations, SpikeClient } from './interface';
 import { getPK } from './publicKey';
+
+const { spike } = config;
 
 const formatSpikeClient = (payload: SpikeClient): Client => ({
     scopes: payload.scope,
@@ -31,4 +37,49 @@ export const validateSpikeJWT = async (token: string, validations: ISpikeJWTVali
         throw new Error('Invalid JWT scope');
 
     return formatSpikeClient(payload as SpikeClient);
+};
+
+export const getSpikeToken = async (audience: string, refresh = false) => {
+    const tokenKey = `${spike.redisTokenPrefix}token-${audience}`;
+
+    if (!refresh) {
+        const savedToken = await redisClient.get(tokenKey);
+        if (savedToken) return savedToken;
+    }
+
+    const lockKey = `${spike.redisTokenPrefix}lock`;
+
+    const timeoutAt = Date.now() + spike.getTokenTimeout;
+
+    while (!(await redisClient.set(lockKey, 'true', { NX: true, PX: spike.getTokenTimeout }))) {
+        if (Date.now() > timeoutAt) throw new Error('Timeout while waiting for token lock');
+
+        await sleep(spike.pollingRate);
+
+        const savedToken = await redisClient.get(tokenKey);
+        if (savedToken) return savedToken;
+    }
+
+    try {
+        await redisClient.del(tokenKey);
+
+        const { url, getTokenRoute, clientId, clientSecret } = spike;
+
+        const response = await axios.post(
+            `${url}${getTokenRoute}`,
+            { grant_type: 'client_credentials', audience },
+            {
+                headers: { Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}` },
+                timeout: spike.getTokenTimeout,
+            },
+        );
+
+        const { access_token, expires_in } = response.data;
+
+        await redisClient.set(tokenKey, access_token, { PX: expires_in * SEC - spike.getTokenTimeout });
+
+        return access_token;
+    } finally {
+        await redisClient.del(lockKey);
+    }
 };

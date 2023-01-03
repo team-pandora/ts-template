@@ -22,6 +22,11 @@ services:
       - MINIO_ROOT_PASSWORD=minio123
     command: "minio server --console-address :3000 /data"
 
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+
   feature:
     build: .
     # image: ghcr.io/team-pandora/ts-template

@@ -53,3 +53,11 @@ export const deleteFileRequestSchema = Joi.object({
     params: objectActionParamsSchema,
     body: {},
 });
+
+export const searchKartoffelUsersRequestSchema = Joi.object({
+    query: {
+        query: Joi.string().required(),
+    },
+    params: {},
+    body: {},
+});

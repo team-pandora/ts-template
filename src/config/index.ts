@@ -1,4 +1,6 @@
 import * as env from 'env-var';
+import { MB } from '../utils/fs';
+import { MIN, SEC } from '../utils/time';
 import './dotenv';
 
 const config = {
@@ -35,11 +37,21 @@ const config = {
             .default(10 * 1000 * 1000)
             .asInt(),
     },
+    redis: {
+        uri: env.get('REDIS_URI').required().asString(),
+    },
     spike: {
+        url: env.get('SPIKE_URL').required().asString(),
+        clientId: env.get('SPIKE_CLIENT_ID').required().asString(),
+        clientSecret: env.get('SPIKE_CLIENT_SECRET').required().asString(),
         audience: env.get('SPIKE_AUDIENCE').required().asString(),
+        getTokenRoute: env.get('SPIKE_GET_TOKEN_ROUTE').default('/oauth2/token').asString(),
+        redisTokenPrefix: env.get('SPIKE_REDIS_TOKEN_PREFIX').default('spike-').asString(),
+        getTokenTimeout: env.get('SPIKE_TOKEN_EXPIRATION_OFFSET').default(MIN).asInt(),
+        pollingRate: env.get('SPIKE_POLLING_RATE').default(SEC).asInt(),
         publicKey: {
             path: env.get('SPIKE_PUBLIC_KEY_PATH').default('./certificate/publicKey.pem').asString(),
-            downloadUri: env.get('SPIKE_PUBLIC_KEY_DOWNLOAD_URI').required().asUrlString(),
+            downloadRoute: env.get('SPIKE_PUBLIC_KEY_DOWNLOAD_ROUTE').default('/.well-known/publickey.pem').asString(),
             renewalIntervalMs: env.get('SPIKE_PUBLIC_KEY_RENEWAL_INTERVAL_MS').default('0').asInt(),
         },
     },
@@ -47,6 +59,13 @@ const config = {
         url: env.get('SHRAGA_URL').required().asString(),
         secret: env.get('SHRAGA_SECRET').default('secret').asString(),
         callbackUrl: env.get('SHRAGA_CALLBACK_URL').required().asString(),
+    },
+    kartoffel: {
+        url: env.get('KARTOFFEL_URL').required().asString(),
+        spikeAudience: env.get('KARTOFFEL_SPIKE_AUDIENCE').default('kartoffel').asString(),
+        timeout: env.get('KARTOFFEL_TIMEOUT').default(MIN).asInt(),
+        maxContentLength: env.get('KARTOFFEL_MAX_CONTENT_LENGTH').default(MB).asInt(),
+        maxBodyLength: env.get('KARTOFFEL_MAX_BODY_LENGTH').default(MB).asInt(),
     },
 };
 
