@@ -6,6 +6,14 @@ import minioClient, { minioCopyConditions } from './client';
 import handleMinioError from './error';
 
 const { region } = config.minio;
+const { testBucket } = config.service;
+
+export const healthCheck = async () => {
+    return minioClient
+        .bucketExists(testBucket)
+        .then(() => true)
+        .catch(() => false);
+};
 
 export const ensureBucket = async (bucketName: string) => {
     return minioClient.makeBucket(bucketName, region).catch((err) => {
