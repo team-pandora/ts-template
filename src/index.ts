@@ -9,26 +9,26 @@ import redisClient from './utils/redis';
 const { mongo, rabbit, service } = config;
 
 const initializeMongo = async () => {
-    logger.log('info', 'Connecting to Mongo...');
+    logger.info('Connecting to Mongo...');
 
     mongoose.set('strictQuery', true);
     await mongoose.connect(mongo.uri).catch((err) => {
         throw new Error(`Error connecting to Mongo: ${err.message}`);
     });
 
-    logger.log('info', 'Mongo connected');
+    logger.info('Mongo connected');
 };
 
 const initializeRabbit = async () => {
     const { uri, retryOptions, featuresQueue } = rabbit;
 
-    logger.log('info', 'Connecting to Rabbit...');
+    logger.info('Connecting to Rabbit...');
 
     await menash.connect(uri, retryOptions).catch((err) => {
         throw new Error(`Error connecting to Rabbit: ${err.message}`);
     });
 
-    logger.log('info', 'Rabbit connected');
+    logger.info('Rabbit connected');
 
     const { name, durable, prefetch } = featuresQueue;
 
@@ -39,17 +39,17 @@ const initializeRabbit = async () => {
         msg.ack();
     });
 
-    logger.log('info', 'Rabbit initialized');
+    logger.info('Rabbit initialized');
 };
 
 const initializeMinio = async () => {
-    logger.log('info', 'Connecting to Minio...');
+    logger.info('Connecting to Minio...');
 
-    await minioClient.bucketExists('test').catch((err) => {
+    await minioClient.bucketExists(service.testBucket).catch((err: Error) => {
         throw new Error(`Error connecting to Minio: ${err.message}`);
     });
 
-    logger.log('info', 'Minio initialized');
+    logger.info('Minio initialized');
 };
 
 const initializeRedis = async () => {

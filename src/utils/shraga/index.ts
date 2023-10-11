@@ -7,6 +7,7 @@ const formatShragaUser = (payload: ShragaUser): User => ({
     adfsId: payload.adfsId,
     firstName: payload.name?.firstName,
     lastName: payload.name?.lastName,
+    unit: payload.displayName.split('/').find((unitOrPrefix) => !config.service.unitPrefixes.includes(unitOrPrefix)),
     displayName: payload.displayName,
     mail: payload.email,
     expiration: payload.exp,
@@ -19,7 +20,7 @@ export const verifyShragaJwt = async (token: string) => {
         clockTimestamp: Date.now() / 1000,
     });
 
-    if (typeof payload !== 'object' || !payload.iat || !payload.exp) {
+    if (typeof payload !== 'object' || !payload.iat || !payload.exp || !payload.genesisId) {
         throw new Error('Invalid JWT payload');
     }
 

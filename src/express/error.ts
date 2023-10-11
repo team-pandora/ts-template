@@ -2,7 +2,8 @@ import * as express from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 export class ServerError extends Error {
-    constructor(public code: number, public message: string, public originalError?: object, public meta?: object) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    constructor(public code: number, public message: string, public originalError?: object, public meta?: any) {
         super();
     }
 

@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { StatusCodes } from 'http-status-codes';
+import config from '../../config';
 import { ServerError } from '../../express/error';
 import logger from '../logger';
 import { getSpikeToken } from '../spike';
@@ -26,6 +27,8 @@ export const serviceErrorHandler =
     };
 
 export const applySpikeInterceptors = (axiosInstance: AxiosInstance, audience: string, bearer = false) => {
+    if (!config.spike.enabled) return;
+
     const setToken = async (config: AxiosRequestConfig, refresh?: boolean) => {
         config.headers ||= {};
         config.headers.Authorization = `${bearer ? 'Bearer ' : ''}${await getSpikeToken(audience, refresh)}`;

@@ -18,7 +18,7 @@ jobs:
 
       - name: Install dependencies
         run: npm i
-        
+
       - name: Lint
         uses: reviewdog/action-eslint@v1
         with:
@@ -37,6 +37,6 @@ jobs:
 
       - name: Test
         run: |
-          docker compose up -d mongo rabbit minio
+          docker compose up -d mongo rabbit minio redis
           npm i
           npm run test

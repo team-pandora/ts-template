@@ -6,6 +6,14 @@ import minioClient, { minioCopyConditions } from './client';
 import handleMinioError from './error';
 
 const { region } = config.minio;
+const { testBucket } = config.service;
+
+export const healthCheck = async () => {
+    return minioClient
+        .bucketExists(testBucket)
+        .then(() => true)
+        .catch(() => false);
+};
 
 export const ensureBucket = async (bucketName: string) => {
     return minioClient.makeBucket(bucketName, region).catch((err) => {
@@ -27,9 +35,9 @@ export const statFile = async (bucketName: string, objectName: string) => {
     return minioClient.statObject(bucketName, objectName).catch(handleMinioError);
 };
 
-export const uploadFile = async (bucketName: string, objectName: string, stream: string | Buffer | Readable) => {
+export const uploadFile = async (bucketName: string, objectName: string, file: string | Buffer | Readable) => {
     await ensureBucket(bucketName);
-    return minioClient.putObject(bucketName, objectName, stream).catch(handleMinioError);
+    return minioClient.putObject(bucketName, objectName, file).catch(handleMinioError);
 };
 
 export const downloadFile = async (bucketName: string, objectName: string) => {

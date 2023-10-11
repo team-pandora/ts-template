@@ -7,7 +7,50 @@ import { SEC, sleep } from '../time';
 import { Client, ISpikeJWTValidations, SpikeClient } from './interface';
 import { getPK } from './publicKey';
 
-const { spike } = config;
+const { redisTokenPrefix, getTokenTimeout, pollingRate, url, getTokenRoute, clientId, clientSecret } = config.spike;
+
+export const getSpikeToken = async (audience: string, refresh = false) => {
+    const tokenKey = `${redisTokenPrefix}token-${audience}`;
+
+    if (!refresh) {
+        const savedToken = await redisClient.get(tokenKey);
+        if (savedToken) return savedToken;
+    }
+
+    const lockKey = `${redisTokenPrefix}lock`;
+
+    const timeoutAt = Date.now() + getTokenTimeout;
+
+    while (!(await redisClient.set(lockKey, 'true', { NX: true, PX: getTokenTimeout }))) {
+        if (Date.now() > timeoutAt) throw new Error('Timeout while waiting for token lock');
+
+        await sleep(pollingRate);
+
+        const savedToken = await redisClient.get(tokenKey);
+        if (savedToken) return savedToken;
+    }
+
+    try {
+        await redisClient.del(tokenKey);
+
+        const response = await axios.post(
+            `${url}${getTokenRoute}`,
+            { grant_type: 'client_credentials', audience },
+            {
+                headers: { Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}` },
+                timeout: getTokenTimeout,
+            },
+        );
+
+        const { access_token, expires_in } = response.data;
+
+        await redisClient.set(tokenKey, access_token, { PX: expires_in * SEC - getTokenTimeout });
+
+        return access_token;
+    } finally {
+        await redisClient.del(lockKey);
+    }
+};
 
 const formatSpikeClient = (payload: SpikeClient): Client => ({
     scopes: payload.scope,
@@ -37,49 +80,4 @@ export const validateSpikeJWT = async (token: string, validations: ISpikeJWTVali
         throw new Error('Invalid JWT scope');
 
     return formatSpikeClient(payload as SpikeClient);
-};
-
-export const getSpikeToken = async (audience: string, refresh = false) => {
-    const tokenKey = `${spike.redisTokenPrefix}token-${audience}`;
-
-    if (!refresh) {
-        const savedToken = await redisClient.get(tokenKey);
-        if (savedToken) return savedToken;
-    }
-
-    const lockKey = `${spike.redisTokenPrefix}lock`;
-
-    const timeoutAt = Date.now() + spike.getTokenTimeout;
-
-    while (!(await redisClient.set(lockKey, 'true', { NX: true, PX: spike.getTokenTimeout }))) {
-        if (Date.now() > timeoutAt) throw new Error('Timeout while waiting for token lock');
-
-        await sleep(spike.pollingRate);
-
-        const savedToken = await redisClient.get(tokenKey);
-        if (savedToken) return savedToken;
-    }
-
-    try {
-        await redisClient.del(tokenKey);
-
-        const { url, getTokenRoute, clientId, clientSecret } = spike;
-
-        const response = await axios.post(
-            `${url}${getTokenRoute}`,
-            { grant_type: 'client_credentials', audience },
-            {
-                headers: { Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}` },
-                timeout: spike.getTokenTimeout,
-            },
-        );
-
-        const { access_token, expires_in } = response.data;
-
-        await redisClient.set(tokenKey, access_token, { PX: expires_in * SEC - spike.getTokenTimeout });
-
-        return access_token;
-    } finally {
-        await redisClient.del(lockKey);
-    }
 };

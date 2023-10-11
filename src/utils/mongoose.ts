@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
 import { mongoDuplicateKeyError } from './express/errors';
 
+export class ObjectId extends mongoose.Types.ObjectId {}
+
 export const setDefaultSettings = (schema: mongoose.Schema) => {
     schema.pre(/.*/, function setSettings() {
         if (typeof this.lean === 'function') this.lean();
