@@ -27,9 +27,9 @@ export const statFile = async (bucketName: string, objectName: string) => {
     return minioClient.statObject(bucketName, objectName).catch(handleMinioError);
 };
 
-export const uploadFile = async (bucketName: string, objectName: string, stream: string | Buffer | Readable) => {
+export const uploadFile = async (bucketName: string, objectName: string, file: string | Buffer | Readable) => {
     await ensureBucket(bucketName);
-    return minioClient.putObject(bucketName, objectName, stream).catch(handleMinioError);
+    return minioClient.putObject(bucketName, objectName, file).catch(handleMinioError);
 };
 
 export const downloadFile = async (bucketName: string, objectName: string) => {

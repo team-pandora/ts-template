@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { NextFunction, Request, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { shragaCallbackMiddleware, shragaLoginMiddleware } from './auth';
 import { ServerError } from './error';
@@ -16,8 +16,8 @@ appRouter.use('/isAlive', (_req, res) => {
     res.status(StatusCodes.OK).send('alive');
 });
 
-appRouter.use('*', (_req, res, next) => {
-    if (!res.headersSent) {
+appRouter.use('*', (req: Request, _, next: NextFunction) => {
+    if (!req.route) {
         next(new ServerError(StatusCodes.NOT_FOUND, 'Invalid route'));
     }
     next();

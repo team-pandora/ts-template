@@ -23,6 +23,7 @@ export interface User {
     adfsId: string;
     firstName: string;
     lastName: string;
+    unit: string | undefined;
     displayName: string;
     mail: string;
     expiration: number;

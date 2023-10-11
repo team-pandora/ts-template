@@ -16,7 +16,7 @@ export class PublicKeyManager {
 
     private downloadUri: string;
 
-    private renewalInterval: NodeJS.Timer;
+    private renewalInterval: NodeJS.Timeout;
 
     constructor(PKConfig: IPublicKeyManagerConfig) {
         this.path = PKConfig.path;
@@ -42,7 +42,7 @@ export class PublicKeyManager {
         fs.mkdir(this.path.substring(0, this.path.lastIndexOf('/')) || '.', { recursive: true })
             .then(() => fs.writeFile(this.path, pk))
             .catch((err) => {
-                logger.log('warn', `Failed to write public key to file: ${err}`);
+                logger.warn(`Failed to write public key to file: ${err}`);
             });
 
         return pk;

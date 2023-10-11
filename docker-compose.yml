@@ -1,31 +1,45 @@
 version: '3.4'
 
 services:
+
   mongo:
     image: mongo
+    restart: always
+    command: --replSet rs0 --bind_ip_all
     ports:
-      - 27017:27017
+      - "27017:27017"
 
-  rabbit:
-    image: rabbitmq:3-management
-    ports:
-      - 5672:5672
-      - 15672:15672
+  mongosetup:
+    image: mongo
+    depends_on:
+      - mongo
+    restart: on-failure
+    command: >
+      mongosh --host mongo:27017 --eval "rs.initiate({ _id: 'rs0', members: [{ _id: 1, host: 'localhost:27017' }] })"
 
   minio:
     image: minio/minio
-    ports:
-      - 9000:9000
-      - 3000:3000
+    container_name: minio
     environment:
       - MINIO_ROOT_USER=minio
       - MINIO_ROOT_PASSWORD=minio123
     command: "minio server --console-address :3000 /data"
+    ports:
+      - "9000:9000"
+      - "3000:3000"
+
+  rabbit:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
   redis:
     image: redis
+    restart: always
     ports:
-      - 6379:6379
+      - "6379:6379"
 
   feature:
     build: .
@@ -43,4 +57,4 @@ services:
       SHRAGA_URL: https://shraga.shraga.branch-yesodot.org
       SHRAGA_CALLBACK_URL: http://localhost/auth/callback
     ports:
-      - 80:80
+      - "80:80"

@@ -5,8 +5,17 @@ import './dotenv';
 
 const config = {
     service: {
+        production: env.get('PRODUCTION').default('false').asBool(),
         port: env.get('PORT').required().asPortNumber(),
         useCors: env.get('USE_CORS').default('false').asBool(),
+        testBucket: env.get('TEST_BUCKET').default('test').asString(),
+        adminIds: env.get('ADMIN_IDS').default('').asArray(),
+        logsDir: env.get('LOGS_DIR').default('./logs').asString(),
+        unitPrefixes: env.get('UNIT_PREFIXES').default('CTS').asArray(),
+        maxFileSizeInBytes: env
+            .get('MAX_FILE_SIZE_IN_BYTES')
+            .default(10 * MB)
+            .asInt(),
     },
     mongo: {
         uri: env.get('MONGO_URI').required().asString(),
@@ -41,6 +50,7 @@ const config = {
         uri: env.get('REDIS_URI').required().asString(),
     },
     spike: {
+        enabled: env.get('SPIKE_ENABLED').default('true').asBool(),
         url: env.get('SPIKE_URL').required().asString(),
         clientId: env.get('SPIKE_CLIENT_ID').required().asString(),
         clientSecret: env.get('SPIKE_CLIENT_SECRET').required().asString(),
@@ -58,7 +68,8 @@ const config = {
     shraga: {
         url: env.get('SHRAGA_URL').required().asString(),
         secret: env.get('SHRAGA_SECRET').default('secret').asString(),
-        callbackUrl: env.get('SHRAGA_CALLBACK_URL').required().asString(),
+        defaultCallbackUrl: env.get('SHRAGA_DEFAULT_CALLBACK_URL').required().asString(),
+        unauthenticatedRedirectRoute: env.get('SHRAGA_UNAUTHENTICATED_REDIRECT_ROUTE').default('/forbidden').asString(),
     },
     kartoffel: {
         url: env.get('KARTOFFEL_URL').required().asString(),

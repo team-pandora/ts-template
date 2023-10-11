@@ -4,7 +4,7 @@ import * as Joi from 'joi';
 import * as mongoose from 'mongoose';
 import { ServerError } from '../express/error';
 import wrapMiddleware from './express';
-import { objectAssignSpecific as objectAssignByKeys } from './object';
+import { objectAssignSpecific } from './object';
 
 export const JoiObjectId = Joi.string().hex().length(24);
 
@@ -20,7 +20,7 @@ const ValidateRequest = <T>(schema: Joi.ObjectSchema<T>, options: Joi.Validation
     return wrapMiddleware(async (req: Request) => {
         const { error, value } = schema.unknown().validate(req, options) as Joi.ValidationResult<Request>;
         if (error) throw new ServerError(StatusCodes.BAD_REQUEST, error.message);
-        if (options.convert) objectAssignByKeys(req, value, ['body', 'query', 'params']);
+        if (options.convert) objectAssignSpecific(req, value, ['body', 'query', 'params']);
     });
 };
 

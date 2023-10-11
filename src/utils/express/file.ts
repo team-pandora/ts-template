@@ -2,15 +2,20 @@ import * as Busboy from 'busboy';
 import { Request } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { Readable } from 'stream';
+import config from '../../config';
 import { ServerError } from '../../express/error';
 
-export const handleFileUpload = <T>(req: Request, fileHandler: (file: Readable) => Promise<T>) => {
+export const handleFileUpload = <T>(
+    req: Request,
+    fileHandler: (file: Readable) => Promise<T>,
+    fileSize = config.service.maxFileSizeInBytes,
+) => {
     return new Promise((resolve, reject) => {
         req.on('error', (err) => {
             reject(new ServerError(StatusCodes.INTERNAL_SERVER_ERROR, `Error uploading file, ${err.message}`, err));
         });
 
-        const busboy = Busboy({ headers: req.headers });
+        const busboy = Busboy({ headers: req.headers, limits: { files: 1, fields: 0, fileSize } });
         let fileUpload: Promise<T>;
 
         busboy.on('file', (field, file) => {
